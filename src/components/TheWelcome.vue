@@ -1,86 +1,1013 @@
-<script setup>
-import WelcomeItem from './WelcomeItem.vue'
-import DocumentationIcon from './icons/IconDocumentation.vue'
-import ToolingIcon from './icons/IconTooling.vue'
-import EcosystemIcon from './icons/IconEcosystem.vue'
-import CommunityIcon from './icons/IconCommunity.vue'
-import SupportIcon from './icons/IconSupport.vue'
-</script>
-
 <template>
-  <WelcomeItem>
-    <template #icon>
-      <DocumentationIcon />
-    </template>
-    <template #heading>Documentation</template>
+    <div>
+        <section class="vender">
+            <div class="container">
+                <h2>Stay Curious</h2>
+                <p>Discover sotories,thing,and expertise <br>
+                    from writers on any topic</p>
+                <a href="{{ route('register.create') }}">Start reading</a>
+            </div>
+        </section>
+        <div class="container">
+            <div class="postlist-content">
+                <div class="clearfix">
+                    <div class="post-list">
+                        <div v-for="(post, index) in posts" :key="index">
+                            <div class="post">
+                                <div class="people">
+                                    <a href="">
+                                        <div class="clearfix">
+                                            <div class="profile-img">
+                                                <img :src="url + post.user?.profile" class="create-user-img"
+                                                    onerror="this.onerror=null;this.src='';">
+                                            </div>
+                                            <p class="name">{{ post.user.name }}</p>
+                                        </div>
+                                    </a>
+                                </div>
+                                <a href="{{ route('post.show', $post->id) }}">
+                                    <div class="clearfix">
+                                        <div class="post-text">
 
-    Vue’s
-    <a href="https://vuejs.org/" target="_blank" rel="noopener">official documentation</a>
-    provides you with all information you need to get started.
-  </WelcomeItem>
+                                            <!--post-user-->
 
-  <WelcomeItem>
-    <template #icon>
-      <ToolingIcon />
-    </template>
-    <template #heading>Tooling</template>
+                                            <div>
+                                                <h2 class="post-title">{{ post.title }}</h2>
+                                                <p class="post-description">
+                                                    {{ short(post.description) }}</p>
+                                                <div class="post-footer">
+                                                    <div class="postfo-left">
+                                                        <!-- @foreach ($post->categories as $category) -->
+                                                        <div>
+                                                            <a href="" v-for="(category, index) in post.categories"
+                                                                :key="index">
+                                                                <span>{{ category.ctitle }}</span>
+                                                            </a>
+                                                        </div>
 
-    This project is served and bundled with
-    <a href="https://vitejs.dev/guide/features.html" target="_blank" rel="noopener">Vite</a>. The
-    recommended IDE setup is
-    <a href="https://code.visualstudio.com/" target="_blank" rel="noopener">VSCode</a> +
-    <a href="https://github.com/johnsoncodehk/volar" target="_blank" rel="noopener">Volar</a>. If
-    you need to test your components and web pages, check out
-    <a href="https://www.cypress.io/" target="_blank" rel="noopener">Cypress</a> and
-    <a href="https://on.cypress.io/component" target="_blank">Cypress Component Testing</a>.
+                                                        <!-- @endforeach -->
+                                                    </div>
+                                                    <p class="post-date">{{ formatDate(post.created_at) }} <span>{{
+                                                        minuteAgo(post.created_at) }}</span></p>
 
-    <br />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="post-img">
+                                            <img :src="url + post.image" alt="" width="100%" height="100%"
+                                                onerror="this.onerror=null;this.src='../assets/template/people.jfif';">
+                                        </div>
+                                        <!--post-left-->
+                                    </div>
+                                </a>
+                                <div class="postfo-right">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="tr">
+                                        <path
+                                            d="M17.5 1.25a.5.5 0 0 1 1 0v2.5H21a.5.5 0 0 1 0 1h-2.5v2.5a.5.5 0 0 1-1 0v-2.5H15a.5.5 0 0 1 0-1h2.5v-2.5zm-11 4.5a1 1 0 0 1 1-1H11a.5.5 0 0 0 0-1H7.5a2 2 0 0 0-2 2v14a.5.5 0 0 0 .8.4l5.7-4.4 5.7 4.4a.5.5 0 0 0 .8-.4v-8.5a.5.5 0 0 0-1 0v7.48l-5.2-4a.5.5 0 0 0-.6 0l-5.2 4V5.75z"
+                                            fill="#000"></path>
+                                    </svg>
 
-    More instructions are available in <code>README.md</code>.
-  </WelcomeItem>
+                                    <!-- @if (Auth::user())
+                @if ($post->user->name == Auth::user()->name) -->
+                                    <p class="see-tools" onclick="editDelete({{ $post->id }})">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                            <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM8.25 12h7.5"
+                                                stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+                                    </p>
+                                    <!-- @endif
+                @endif -->
+                                    <div class="tools">
+                                        <form action="" method="post">
+                                            <!-- @csrf
+                                        @method('delete') -->
+                                            <button class="del-btn">
+                                                Delete
+                                            </button>
+                                        </form>
+                                        <a href="{{ route('post.edit', $post->id) }}">Edit
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-  <WelcomeItem>
-    <template #icon>
-      <EcosystemIcon />
-    </template>
-    <template #heading>Ecosystem</template>
 
-    Get official tools and libraries for your project:
-    <a href="https://pinia.vuejs.org/" target="_blank" rel="noopener">Pinia</a>,
-    <a href="https://router.vuejs.org/" target="_blank" rel="noopener">Vue Router</a>,
-    <a href="https://test-utils.vuejs.org/" target="_blank" rel="noopener">Vue Test Utils</a>, and
-    <a href="https://github.com/vuejs/devtools" target="_blank" rel="noopener">Vue Dev Tools</a>. If
-    you need more resources, we suggest paying
-    <a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">Awesome Vue</a>
-    a visit.
-  </WelcomeItem>
 
-  <WelcomeItem>
-    <template #icon>
-      <CommunityIcon />
-    </template>
-    <template #heading>Community</template>
+                        <!--second post-->
+                        <!-- @empty -->
+                        <h2> Result is empty</h2>
+                        <!-- @endforelse/ -->
+                        <!-- {{ $posts->onEachSide(5)->links() }} -->
+                    </div>
+                    <div class="category">
+                        <div class="category-list">
+                            <h2 class="cate-name">2022 IN Latest Post</h2>
+                            <!-- @foreach ($latestPosts as $lpost) -->
+                            <div v-for="(lpost, index) in latestPosts" :key="index">
+                                <div class="latest-post-whole">
+                                    <div class="latest-post">
+                                        <div class="list-latest-profile">
+                                            <a href="{{ route('user.profile',$lpost->user->id) }}">
+                                                <img :src="url + lpost.user.profile" alt="" width="100%" height="100%"
+                                                    onerror="this.onerror=null;this.src='{{ asset('template/people.jfif') }}';">
+                                                <p class="name">{{ lpost.user.name }}</p>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <a href="{{ route('post.show', $lpost->id) }}">
+                                        <!--post-user-->
+                                        <div class="latest-description">{{ latestShort(lpost.description) }}</div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- @endforeach -->
+                        <div class="category-item">
+                            <!-- @foreach ($categories as $cat) -->
 
-    Got stuck? Ask your question on
-    <a href="https://chat.vuejs.org" target="_blank" rel="noopener">Vue Land</a>, our official
-    Discord server, or
-    <a href="https://stackoverflow.com/questions/tagged/vue.js" target="_blank" rel="noopener"
-      >StackOverflow</a
-    >. You should also subscribe to
-    <a href="https://news.vuejs.org" target="_blank" rel="noopener">our mailing list</a> and follow
-    the official
-    <a href="https://twitter.com/vuejs" target="_blank" rel="noopener">@vuejs</a>
-    twitter account for latest news in the Vue world.
-  </WelcomeItem>
+                            <a href="{{ route('home.search', $cat->ctitle) }}" v-for="(category, index) in categories"
+                                :key="index">{{ category.ctitle }}</a>
 
-  <WelcomeItem>
-    <template #icon>
-      <SupportIcon />
-    </template>
-    <template #heading>Support Vue</template>
+                            <!-- @endforeach -->
+                        </div>
+                    </div>
 
-    As an independent project, Vue relies on community backing for its sustainability. You can help
-    us by
-    <a href="https://vuejs.org/sponsor/" target="_blank" rel="noopener">becoming a sponsor</a>.
-  </WelcomeItem>
+                </div>
+            </div>
+            <!--right-category-->
+        </div>
+    </div>
 </template>
+<script setup>
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import moment from 'moment';
+
+import axios from 'axios';
+const posts = ref([]);
+const latestPosts = ref([]);
+const categories = ref([]);
+const url = ref('http://127.0.0.1:8000/storage/');
+
+onMounted(async () => {
+    axios.get('http://127.0.0.1:8000/api/posts').then((response) => {
+        posts.value = response.data.posts;
+        latestPosts.value = response.data.latestPosts;
+        categories.value = response.data.categories;
+    });
+})
+function formatDate(date) {
+    return moment(date).format('MMMM Do');
+}
+function minuteAgo(date) {
+    return moment(date).fromNow();
+}
+function short(value) {
+    if (value.length > 70) {
+        return value.slice(0, 70) + "...";
+    } else {
+        return value;
+    }
+}
+function latestShort(value) {
+    if (value.length > 20) {
+        return value.slice(0, 20) + "...";
+    } else {
+        return value;
+    }
+}
+</script>
+<style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed&family=Sofia+Sans+Condensed&display=swap');
+
+.create-user-img {
+    width: 35px;
+    border-radius: 50%;
+}
+
+body {
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
+.container {
+    width: 1100px;
+    margin: 0 auto;
+
+}
+
+.vender {
+    margin-bottom: 30px;
+
+    padding: 90px 0;
+    margin-top: 40px;
+    background: #f8ba16;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.759);
+}
+
+.vender h2 {
+    margin-bottom: 10px;
+    font-size: 50px;
+}
+
+.vender p {
+    margin: 10px 0 20px 0;
+    font-size: 20px;
+}
+
+.vender a {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 30px;
+    background-color: #2e2e2e;
+    color: #fff;
+    border-radius: 30px;
+}
+
+.search-result {
+    margin: 10px 0;
+    color: #100909;
+    font-size: 35px;
+    text-decoration: underline;
+    text-transform: capitalize;
+}
+
+
+.del-btn {
+    margin-bottom: 9px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #232323;
+    text-align: center;
+}
+
+.tools {
+    display: none;
+    position: absolute;
+    left: 12px;
+    padding: 5px 0px 5px 5px;
+    padding: 6px 20px;
+    border: 1px solid #d5d5d5;
+    background: rgb(255 255 255);
+    text-align: center;
+    border-radius: 5px;
+    top: 28px;
+}
+
+.right-menu {
+    float: left;
+    width: 20%;
+}
+
+.postlist-content {
+    margin-top: 100px;
+}
+
+
+.right-menu h1 {
+    display: inline;
+}
+
+.right-menu h1 img {
+    width: 30px;
+    height: 30px;
+    border: 1px solid;
+}
+
+.input-group {
+    display: flex;
+    height: 32px;
+    overflow: hidden;
+    margin-left: 10px;
+    padding: 0;
+    border: 1px solid rgb(237, 237, 237);
+    background-color: #ebebeb;
+    border-radius: 20px;
+}
+
+.input-group i {
+    margin: 10px;
+}
+
+
+.input-group .search {
+    border: none;
+    background-color: #ebebeb;
+    outline: none;
+}
+
+.left-menu {
+    float: right;
+    width: 15%;
+    line-height: 2;
+}
+
+.write p {
+    display: inline;
+}
+
+.profile-img {
+    display: inline;
+    width: 20px;
+    height: 20px;
+    overflow: hidden;
+    border-radius: 50%;
+}
+
+/* post  */
+
+/* post  */
+.post-list {
+    float: left;
+    width: 55%;
+    margin-top: 10px;
+    padding-right: 30px;
+    border-right: 1px solid #e9e9e9;
+}
+
+.post {
+    position: relative;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e7e7e7;
+}
+
+.post-text {
+    float: left;
+    width: 60%;
+}
+
+.people {
+    margin-bottom: 0px;
+}
+
+.profile-img {
+    width: 30px;
+    height: 30px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    border-radius: 50%;
+}
+
+
+.people p {
+    float: right;
+    width: 93%;
+    margin-top: 5px;
+    color: #676767;
+    font-size: 18px;
+}
+
+
+.post-title {
+    margin-bottom: 0px;
+    color: #2f2d29;
+    font-size: 30px;
+}
+
+.post-description {
+    margin: 10px 0;
+    color: rgb(47 47 59);
+    font-size: 18px;
+}
+
+.post-date {
+    color: rgb(187 187 198);
+    font-size: 15px;
+}
+
+.post-img {
+    float: right;
+    width: 30%;
+}
+
+.post-img img {
+    width: 100%;
+    height: 150px;
+    margin-top: 0px;
+}
+
+.post-footer {
+    display: flex;
+    align-items: top;
+}
+
+.postfo-left {
+    width: 154px;
+}
+
+.postfo-right svg {
+    margin-right: 5px;
+}
+
+.postfo-left a {
+    display: inline-block;
+}
+
+.postfo-left span {
+    display: inline-block;
+    margin-right: 10px;
+    padding: 5px 10px;
+    margin-bottom: 5px;
+    background-color: #e1e1e1;
+    font-size: 10px;
+    border-radius: 20px;
+}
+
+.home-footer {
+    display: flex;
+}
+
+.postfo-right {
+    display: flex;
+    position: absolute;
+    bottom: 28px;
+    left: 300px;
+    align-items: center;
+    z-index: 2;
+}
+
+.postfo-right i {
+    margin-right: 5px;
+}
+
+.category {
+    float: right;
+    width: 40%;
+}
+
+.category-list {
+    margin-bottom: 30px;
+
+}
+
+.category-list h2 {
+    margin-bottom: 10px;
+    color: #323232;
+    font-size: 21px;
+}
+
+
+.latest-post-whole {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #cdcdcd;
+    padding-bottom: 10px;
+}
+
+.latest-post {
+    font-size: 23px;
+
+    font-weight: bold;
+}
+
+.list-latest-profile a {
+    display: flex;
+    align-items: center;
+}
+
+.latest-post img {
+    width: 25px;
+    height: 25px;
+    margin-right: 5px;
+    border-radius: 50%;
+}
+
+.latest-post .name {
+    font-size: 14px;
+    color: #484848;
+    font-weight: bold;
+}
+
+.latest-description {
+    margin-top: 5px;
+    font-size: 23px;
+    color: #776b6b;
+    font-weight: bold;
+}
+
+.category-item a {
+    display: inline-block;
+    margin: 10px 34px 3px 0;
+    padding: 8px 20px;
+    border: 1px solid rgb(133 133 133);
+    color: #4b4b4b;
+    font-size: 15px;
+    border-radius: 20px;
+}
+
+.category-item a:hover {
+    background-color: #b7b9bd;
+}
+
+.category-item a:nth-child(3n) {
+    margin-right: 0 !important;
+}
+
+
+
+@media screen and (max-width: 768px) {
+    .container {
+        width: auto;
+        padding: 0 39.997px;
+    }
+
+    .login-hright h1 a img {
+        width: 29.998px;
+        height: 29.998px;
+        border-radius: 50%;
+    }
+
+    .right-menu {
+        float: left;
+        width: 20%;
+    }
+
+    .login-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 0px;
+
+    }
+
+    .login-hright {
+        display: flex;
+        align-items: center;
+    }
+
+    .right-menu h1 {
+        display: inline;
+    }
+
+    .right-menu h1 img {
+        width: 29.998px;
+        height: 29.998px;
+        border: 0.998px solid;
+    }
+
+    .input-group {
+        display: flex;
+        height: 32.003px;
+        overflow: hidden;
+        margin-left: 9.999px;
+        padding: 0;
+        border: 0.998px solid rgb(237, 237, 237);
+        background-color: #ebebeb;
+        border-radius: 19.999px;
+    }
+
+    .input-group i {
+        margin: 9.999px;
+    }
+
+    .input-group .search {
+        border: none;
+        background-color: #ebebeb;
+        outline: none;
+    }
+
+    .left-menu {
+        float: right;
+        width: 15%;
+        line-height: 2;
+    }
+
+    .write p {
+        display: inline;
+    }
+
+    .profile-img {
+        display: inline;
+        width: 19.999px;
+        height: 19.999px;
+        overflow: hidden;
+        border-radius: 50%;
+    }
+
+    /* post  */
+
+    /* post  */
+    .post-list {
+        float: none;
+        width: 100%;
+        margin-bottom: 19.999px;
+        border-bottom: 0.998px solid #d3d3d3;
+    }
+
+    .post {
+        margin-bottom: 29.998px;
+    }
+
+    .post-text {
+        float: left;
+        width: 60%;
+    }
+
+    .people {
+        margin-bottom: 0px;
+    }
+
+    .profile-img {
+        float: left;
+        width: 29.998px;
+        height: 29.998px;
+        overflow: hidden;
+        margin-bottom: 9.999px;
+        border-radius: 50%;
+    }
+
+
+    .people p {
+        float: right;
+        width: 89%;
+        margin-top: 5px;
+        color: #676767;
+        font-size: 18.002px;
+    }
+
+
+
+    .post-title {
+        margin-bottom: 0px;
+        color: #2f2d29;
+        font-size: 29.998px;
+    }
+
+    .post-description {
+        margin: 9.999px 0;
+        color: rgb(187 187 198);
+        font-size: 18.002px;
+    }
+
+    .post-date {
+        color: rgb(187 187 198);
+        font-size: 14.999px;
+    }
+
+    .post-img {
+        float: right;
+        width: 30%;
+        height: 20.313vw;
+    }
+
+    .post-img img {
+        width: 100%;
+        height: 100%;
+    }
+
+    .category {
+        float: none;
+        width: 100%;
+    }
+
+    .category-list {
+        margin-bottom: 29.998px;
+
+    }
+
+    .category-list h2 {
+        margin-bottom: 9.999px;
+        color: #000;
+        font-size: 24.998px;
+    }
+
+    .latest-post-whole {
+        margin-bottom: 14.999px;
+    }
+
+    .latest-post {
+        font-size: 23.002px;
+
+        font-weight: bold;
+    }
+
+    .list-latest-profile {
+        display: flex;
+        align-items: center;
+    }
+
+    .latest-post img {
+        width: 24.998px;
+        height: 24.998px;
+        margin-right: 5px;
+        border-radius: 50%;
+    }
+
+    .latest-post .name {
+        font-size: 14.001px;
+        font-weight: bold;
+    }
+
+    .latest-description {
+        margin-top: 5px;
+        font-size: 23.002px;
+        font-weight: bold;
+    }
+
+
+
+    .postfo-left a span {
+        display: inline-block;
+        margin-right: 9.999px;
+        padding: 5px 9.999px;
+        background-color: #b7b9bd;
+        font-size: 9.999px;
+        border-radius: 19.999px;
+    }
+
+    .postfo-right {
+        display: flex;
+        align-items: center;
+    }
+
+    .postfo-right i {
+        margin-right: 5px;
+    }
+
+    .category-item a {
+        display: inline-block;
+        margin: 9.999px 33.999px 3.003px 0;
+        padding: 8.003px 19.999px;
+        border: 0.998px solid rgb(202, 202, 202);
+        color: #b7b9bd;
+        font-size: 14.999px;
+        border-radius: 19.999px;
+    }
+
+    .category-item a:nth-child(3n) {
+        margin-right: 0 !important;
+    }
+}
+
+
+@media screen and (max-width: 768px) {
+    .container {
+        width: auto;
+        padding: 0 40px;
+    }
+
+    .postlist-content {
+        margin-top: 70.003px;
+    }
+
+    .login-hright h1 a img {
+        width: 30.003px;
+        height: 30.003px;
+        border-radius: 50%;
+    }
+
+    .right-menu {
+        float: left;
+        width: 20%;
+    }
+
+    .login-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 0px;
+
+    }
+
+    .login-hright {
+        display: flex;
+        align-items: center;
+    }
+
+    .right-menu h1 {
+        display: inline;
+    }
+
+    .right-menu h1 img {
+        width: 28px;
+        height: 28px;
+        border: 0.998px solid;
+    }
+
+    .input-group {
+        display: flex;
+        height: 32px;
+        overflow: hidden;
+        margin-left: 10.003px;
+        padding: 0;
+        border: 0.998px solid rgb(237, 237, 237);
+        background-color: #ebebeb;
+        border-radius: 20px;
+    }
+
+    .input-group i {
+        margin: 6.003px;
+    }
+
+    .input-group .search {
+        margin: 0;
+        border: none;
+        background-color: #ebebeb;
+        font-size: 10.003px;
+        outline: none;
+    }
+
+    .left-menu {
+        float: right;
+        width: 15%;
+        line-height: 2;
+    }
+
+    .write p {
+        display: inline;
+    }
+
+
+    .profile-img {
+        display: inline;
+        width: 18.003px;
+        height: 18.003px;
+        overflow: hidden;
+        border-radius: 50%;
+    }
+
+    /* post  */
+
+    /* post  */
+    .post-list {
+        float: none;
+        width: 100%;
+        margin-bottom: 18.003px;
+        border-bottom: 0.998px solid #d3d3d3;
+    }
+
+    .post {
+        margin-bottom: 28px;
+    }
+
+    .post-text {
+        float: left;
+        width: 60%;
+    }
+
+    .people {
+        margin-bottom: 0px;
+    }
+
+    .select-box {
+        position: relative;
+        justify-content: center;
+    }
+
+
+    html .profile-img {
+        float: left;
+        width: 28px;
+        height: 28px;
+        overflow: hidden;
+        margin-bottom: 8px;
+        border-radius: 50%;
+    }
+
+    .postfo-left a span {
+        margin-right: 10.003px;
+        padding: 4.998px 10.003px;
+        font-size: 10.003px;
+        border-radius: 20px;
+    }
+
+    .people p {
+        float: right;
+        width: 89%;
+        margin-top: 4px;
+        color: #676767;
+        font-size: 16px;
+    }
+
+
+
+    .post-title {
+        margin-bottom: 0px;
+        color: #2f2d29;
+        font-size: 28px;
+    }
+
+    .post-description {
+        margin: 8px 0;
+        color: rgb(187 187 198);
+        font-size: 15.002px;
+    }
+
+    .post-date {
+        color: rgb(187 187 198);
+        font-size: 12.998px;
+    }
+
+    .post-img {
+        float: right;
+        width: 30%;
+        height: 140px;
+    }
+
+    .post-img img {
+        width: 100%;
+        height: 100%;
+    }
+
+    .category {
+        float: none;
+        width: 100%;
+    }
+
+    .category-list {
+        margin-bottom: 28px;
+
+    }
+
+    .category-list h2 {
+        margin-bottom: 8px;
+        color: #000;
+        font-size: 23.002px;
+    }
+
+
+    .latest-post-whole {
+        margin-bottom: 12px;
+        padding-bottom: 1.563vw;
+        border-bottom: 0.156vw solid #e2e2e2;
+    }
+
+    .latest-post {
+        font-size: 22.003px;
+        font-weight: bold;
+    }
+
+    .list-latest-profile {
+        display: flex;
+        align-items: center;
+    }
+
+    .latest-post img {
+        width: 23.002px;
+        height: 23.002px;
+        margin-right: 3.002px;
+        border-radius: 50%;
+    }
+
+    .latest-post .name {
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .latest-description {
+        margin-top: 3.002px;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+
+    .search-result {
+        margin: 10.003px 0;
+        color: #979797;
+        font-size: 24.998px;
+    }
+
+    .post-footer {
+        display: flex;
+    }
+
+    .postfo-left {
+        width: 28.125vw;
+    }
+
+
+    .postfo-left a span {
+        display: inline-block;
+        margin-right: 8px;
+        padding: 4.998px 10.003px;
+        background-color: #b7b9bd;
+        font-size: 8px;
+        border-radius: 20px;
+    }
+
+    .postfo-right {
+        bottom: 26.002px;
+        left: 319.002px;
+        align-items: center;
+        z-index: 0;
+    }
+
+    .postfo-right i {
+        margin-right: 3.002px;
+    }
+
+    .category-item a {
+        display: inline-block;
+        margin: 8px 26.003px 3.002px 0;
+        padding: 4.998px 16.998px;
+        border: 0.998px solid rgb(202, 202, 202);
+        color: #b7b9bd;
+        font-size: 12.998px;
+        border-radius: 18.003px;
+    }
+
+    .category-item a:nth-child(3n) {
+        margin-right: 26.003px !important;
+    }
+}</style>
