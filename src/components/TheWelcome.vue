@@ -1,6 +1,6 @@
 <template>
     <div>
-        <section class="vender">
+        <section class="vender" v-if="notAuth">
             <div class="container">
                 <h2>Stay Curious</h2>
                 <p>Discover sotories,thing,and expertise <br>
@@ -25,7 +25,7 @@
                                         </div>
                                     </a>
                                 </div>
-                                <a href="{{ route('post.show', $post->id) }}">
+                                <a >
                                     <div class="clearfix">
                                         <div class="post-text">
 
@@ -37,15 +37,11 @@
                                                     {{ short(post.description) }}</p>
                                                 <div class="post-footer">
                                                     <div class="postfo-left">
-                                                        <!-- @foreach ($post->categories as $category) -->
-                                                        <div>
-                                                            <a href="" v-for="(category, index) in post.categories"
-                                                                :key="index">
-                                                                <span>{{ category.ctitle }}</span>
+                                                   
+                                                            <a v-for="(category, index) in post.categories"  :key="index" @click="searchCategory(category.ctitle)">
+                                                              <span>{{ category.ctitle }}</span>  
                                                             </a>
-                                                        </div>
 
-                                                        <!-- @endforeach -->
                                                     </div>
                                                     <p class="post-date">{{ formatDate(post.created_at) }} <span>{{
                                                         minuteAgo(post.created_at) }}</span></p>
@@ -96,7 +92,7 @@
 
                         <!--second post-->
                         <!-- @empty -->
-                        <h2> Result is empty</h2>
+                        <!-- <h2> Result is empty</h2> -->
                         <!-- @endforelse/ -->
                         <!-- {{ $posts->onEachSide(5)->links() }} -->
                     </div>
@@ -126,8 +122,8 @@
                         <div class="category-item">
                             <!-- @foreach ($categories as $cat) -->
 
-                            <a href="{{ route('home.search', $cat->ctitle) }}" v-for="(category, index) in categories"
-                                :key="index">{{ category.ctitle }}</a>
+                            <a  v-for="(category, index) in categories"
+                                :key="index" @click="searchCategory(category.ctitle)">{{ category.ctitle }}</a>
 
                             <!-- @endforeach -->
                         </div>
@@ -140,23 +136,56 @@
     </div>
 </template>
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, onMounted,watchEffect } from 'vue';
+import { useRouter,useRoute } from 'vue-router';
 import moment from 'moment';
-
 import axios from 'axios';
+
+
+const route=useRouter();
+const getroute=useRoute();
 const posts = ref([]);
 const latestPosts = ref([]);
 const categories = ref([]);
+const notAuth=ref(true);
+const user=ref();
+
 const url = ref('http://127.0.0.1:8000/storage/');
 
-onMounted(async () => {
-    axios.get('http://127.0.0.1:8000/api/posts').then((response) => {
+watchEffect(() => {
+    
+   user.value=localStorage.getItem('user');
+   console.log(user.value);
+
+    if(localStorage.getItem('auth')){
+        notAuth.value=false;
+    }
+      axios.get('http://127.0.0.1:8000/api/posts',  {
+        params: {
+            q: getroute.query.q
+        }
+    }).then((response) => {
         posts.value = response.data.posts;
         latestPosts.value = response.data.latestPosts;
         categories.value = response.data.categories;
     });
+    });
+
+onMounted(async () => {
+  
 })
+
+
+const searchCategory= async(category)=>{
+    axios.get(`http://127.0.0.1:8000/api/${category}`).then((response) => {
+        console.log(response.data);
+        posts.value = response.data.posts;
+        latestPosts.value = response.data.latestPosts;
+        categories.value = response.data.categories;
+    });
+}
+
+
 function formatDate(date) {
     return moment(date).format('MMMM Do');
 }
@@ -487,6 +516,7 @@ body {
 }
 
 .category-item a {
+    cursor: pointer;
     display: inline-block;
     margin: 10px 34px 3px 0;
     padding: 8px 20px;

@@ -87,7 +87,7 @@ const register = async () => {
         if (res.data.success) {
             localStorage.setItem('token', res.data.token)
             alert('aung p');
-            console.log(res.data);
+            authUser();
             router.push({ name: 'home' })
         } else {
             error.value = res.data.message;
@@ -104,6 +104,17 @@ const register = async () => {
     });
 }
 
+const authUser=async()=>{
+    const token = localStorage.getItem('token');
+  await axios.get('http://127.0.0.1:8000/api/user', {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }).then((response) => {
+    Authuser.value = response.data;
+    localStorage.setItem('auth',true);
+  });
+}
 </script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed&family=Sofia+Sans+Condensed&display=swap');

@@ -1,115 +1,163 @@
 <template>
     <div class="">
-    <header >
-        <div >
-            <p class="btn-gnavi">
-                <span></span>
-                <span></span>
-                <span></span>
-            </p>
-            <div class="login-header">
-                <div class="lright-menu">
-                    <div class="login-hright">
-                        <h1>
+        <header>
+            <div>
+                <p class="btn-gnavi">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </p>
+                <div class="login-header">
+                    <div class="lright-menu">
+                        <div class="login-hright">
+                            <h1>
+                                <!-- @if (Auth::user()) -->
+                                <RouterLink to="/"><img src="../assets/template/logo.png" alt="">
+                                </RouterLink>
+                                <!-- @endif -->
+                            </h1>
                             <!-- @if (Auth::user()) -->
-                            <a href=""><img src="../assets/template/logo.png" alt="">
-                            </a>
-                            <!-- @endif -->
-                        </h1>
-                        <!-- @if (Auth::user()) -->
-                        <div class="input-group">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.1 11.06a6.95 6.95 0 1 1 13.9 0 6.95 6.95 0 0 1-13.9 0zm6.94-8.05a8.05 8.05 0 1 0 5.13 14.26l3.75 3.75a.56.56 0 1 0 .8-.79l-3.74-3.73A8.05 8.05 0 0 0 11.04 3v.01z" fill="currentColor"></path></svg>
-                            <form action="{{ route('post.index') }}" method="get" class="search-form">
-                                <input type="text" class="search"  placeholder="Search Medium" name="q">
-                            </form>
-                        </div>
-    
-
-                    </div>
-                </div>
-                <div class="left-aside">
-                    <!-- @if (Auth::user()) -->
-                    <div class="language-change">
-                        <select class="lang-change" id="cmbIdioma" style="width: 200px;">
-                            <option value="United_Kimdom">English
-                            </option>
-                            <option value="Myanmar">
-                                မြန်မာ
-                            </option>
-                        </select>
-                    </div>
-
-                    <!-- @endif -->
-                    <nav id="global-navi">
-                        <ul class="menu">
-                            <!-- @if (Auth::user()) -->
-                            <li class="left-write">
-                                <a href="{{ route('post.create') }}" class="write-link">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-label="Write"><path d="M14 4a.5.5 0 0 0 0-1v1zm7 6a.5.5 0 0 0-1 0h1zm-7-7H4v1h10V3zM3 4v16h1V4H3zm1 17h16v-1H4v1zm17-1V10h-1v10h1zm-1 1a1 1 0 0 0 1-1h-1v1zM3 20a1 1 0 0 0 1 1v-1H3zM4 3a1 1 0 0 0-1 1h1V3z" fill="currentColor"></path><path d="M17.5 4.5l-8.46 8.46a.25.25 0 0 0-.06.1l-.82 2.47c-.07.2.12.38.31.31l2.47-.82a.25.25 0 0 0 .1-.06L19.5 6.5m-2-2l2.32-2.32c.1-.1.26-.1.36 0l1.64 1.64c.1.1.1.26 0 .36L19.5 6.5m-2-2l2 2" stroke="currentColor"></path></svg><span>Write</span></a>
-                            </li>
-                            <li class="menu-toggle">
-                                <div class="select-box">
-                                    <div class="small-menu">
-                                        <!-- @if (Auth::user()) -->
-                                        <img src="../assets/template/people.png" alt="">
-                                        <p class="down-icon">
-                                            <svg width="12px" height="12px" viewBox="0 0 15 15"><path d="M3.85 5.15a.5.5 0 0 0-.7.7l4.35 4.36 4.35-4.36a.5.5 0 1 0-.7-.7L7.5 8.79 3.85 5.15z" fill-rule="evenodd"></path></svg>
-                                        </p>
-                                    </div>
-                                </div>
-                            </li>
-                            <div class="custom-dashboard">
-                                <p><a href=""><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                            aria-label="Profile">
-                                            <circle cx="12" cy="7" r="4.5" stroke="currentColor">
-                                            </circle>
-                                            <path d="M3.5 21.5v-4.34C3.5 15.4 7.3 14 12 14s8.5 1.41 8.5 3.16v4.34"
-                                                stroke="currentColor" stroke-linecap="round"></path>
-                                        </svg> profile</a></p>
-                                <p><a href=""><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                            aria-label="Lists">
-                                            <path
-                                                d="M6.44 6.69h0a1.5 1.5 0 0 1 1.06-.44h9c.4 0 .78.16 1.06.44l.35-.35-.35.35c.28.28.44.66.44 1.06v14l-5.7-4.4-.3-.23-.3.23-5.7 4.4v-14c0-.4.16-.78.44-1.06z"
-                                                stroke="currentColor"></path>
-                                            <path d="M12.5 2.75h-8a2 2 0 0 0-2 2v11.5" stroke="currentColor"
-                                                stroke-linecap="round"></path>
-                                        </svg>post list</a></p>
-                                <div class="custom-logout">
-
-                                    <form action="" method="post">
-                                        <!-- @csrf -->
-                                        <button type="submit">logout</button>
-                                    </form>
-                                </div>
+                            <div class="input-group">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                        d="M4.1 11.06a6.95 6.95 0 1 1 13.9 0 6.95 6.95 0 0 1-13.9 0zm6.94-8.05a8.05 8.05 0 1 0 5.13 14.26l3.75 3.75a.56.56 0 1 0 .8-.79l-3.74-3.73A8.05 8.05 0 0 0 11.04 3v.01z"
+                                        fill="currentColor"></path>
+                                </svg>
+                                <form @submit.prevent="postSearch" method="get" class="search-form">
+                                    <input type="text" class="search" placeholder="Search Medium" v-model="searchVal">
+                                </form>
                             </div>
 
-                        </ul>
-                    </nav>
+
+                        </div>
+                    </div>
+                    <div class="left-aside">
+                        <!-- @if (Auth::user()) -->
+                        <div class="language-change">
+                            <select class="lang-change" id="cmbIdioma" style="width: 200px;">
+                                <option value="United_Kimdom">English
+                                </option>
+                                <option value="Myanmar">
+                                    မြန်မာ
+                                </option>
+                            </select>
+                        </div>
+
+                        <!-- @endif -->
+                        <nav id="global-navi">
+                            <ul class="menu">
+                                <!-- @if (Auth::user()) -->
+                                <li class="left-write">
+                                    <a href="{{ route('post.create') }}" class="write-link">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-label="Write">
+                                            <path
+                                                d="M14 4a.5.5 0 0 0 0-1v1zm7 6a.5.5 0 0 0-1 0h1zm-7-7H4v1h10V3zM3 4v16h1V4H3zm1 17h16v-1H4v1zm17-1V10h-1v10h1zm-1 1a1 1 0 0 0 1-1h-1v1zM3 20a1 1 0 0 0 1 1v-1H3zM4 3a1 1 0 0 0-1 1h1V3z"
+                                                fill="currentColor"></path>
+                                            <path
+                                                d="M17.5 4.5l-8.46 8.46a.25.25 0 0 0-.06.1l-.82 2.47c-.07.2.12.38.31.31l2.47-.82a.25.25 0 0 0 .1-.06L19.5 6.5m-2-2l2.32-2.32c.1-.1.26-.1.36 0l1.64 1.64c.1.1.1.26 0 .36L19.5 6.5m-2-2l2 2"
+                                                stroke="currentColor"></path>
+                                        </svg><span>Write</span></a>
+                                </li>
+                                
+                                <li class="menu-toggle" @click="slideBoard">
+                                    <div class="select-box">
+                                        <div class="small-menu">
+                                            <!-- @if (Auth::user()) -->
+                                            <img :src="url+user.profile" alt="">
+                                            <p class="down-icon">
+                                                <svg width="12px" height="12px" viewBox="0 0 15 15">
+                                                    <path
+                                                        d="M3.85 5.15a.5.5 0 0 0-.7.7l4.35 4.36 4.35-4.36a.5.5 0 1 0-.7-.7L7.5 8.79 3.85 5.15z"
+                                                        fill-rule="evenodd"></path>
+                                                </svg>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </li>
+                                <div class="custom-dashboard" v-if="customBoard" @dblclick="customBoard = false">
+                                    <p><a href=""><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                aria-label="Profile">
+                                                <circle cx="12" cy="7" r="4.5" stroke="currentColor">
+                                                </circle>
+                                                <path d="M3.5 21.5v-4.34C3.5 15.4 7.3 14 12 14s8.5 1.41 8.5 3.16v4.34"
+                                                    stroke="currentColor" stroke-linecap="round"></path>
+                                            </svg> profile</a></p>
+                                    <p><a href=""><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                aria-label="Lists">
+                                                <path
+                                                    d="M6.44 6.69h0a1.5 1.5 0 0 1 1.06-.44h9c.4 0 .78.16 1.06.44l.35-.35-.35.35c.28.28.44.66.44 1.06v14l-5.7-4.4-.3-.23-.3.23-5.7 4.4v-14c0-.4.16-.78.44-1.06z"
+                                                    stroke="currentColor"></path>
+                                                <path d="M12.5 2.75h-8a2 2 0 0 0-2 2v11.5" stroke="currentColor"
+                                                    stroke-linecap="round"></path>
+                                            </svg>post list</a></p>
+
+                                    <p class="custom-logout"><button @click="logout"> logout</button></p>
+
+                                </div>
+
+                            </ul>
+                        </nav>
+                    </div>
                 </div>
             </div>
-        </div>
-    </header>
-</div>
+        </header>
+    </div>
 </template>
 
 <script setup>
+import { ref,watchEffect } from 'vue';
+import { useRouter } from 'vue-router';
+import axios from 'axios';
+
+//
+const router = useRouter();
+const searchVal = ref();
+const customBoard = ref(false);
+const user=ref();
+
+const url = ref('http://127.0.0.1:8000/storage/');
+
+watchEffect(() => {
+user.value=JSON.parse(localStorage.getItem('user'));
+ });
+//function
+const slideBoard = () => {
+    customBoard.value = !(customBoard.value);
+}
+const postSearch = () => {
+    if (searchVal.value.trim() !== '') {
+        router.push({ name: 'home', query: { q: searchVal.value } });
+    } else {
+        router.push({ name: 'home' })
+    }
+}
+const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('auth');
+
+    router.push({ name: 'login' });
+}
 
 </script>
 
-<style scoped>/* custom select with image  */
+<style scoped>
+/* custom select with image  */
 
 svg {
     color: rgba(117, 117, 117, 1) !important;
     margin-right: 3px;
 }
-h1{
+
+h1 {
     margin-top: 3px;
 }
-.write-link{
+
+.write-link {
     display: flex;
     align-items: center;
 
 }
+
 /* custom select    */
 header {
     height: 60px !important;
@@ -123,7 +171,7 @@ header {
     border-bottom: 1px solid #bcbcbc;
 }
 
- select option .gugu{
+select option .gugu {
     color: red;
 }
 
@@ -142,7 +190,6 @@ header {
 }
 
 .custom-dashboard {
-    display: none;
     position: absolute !important;
     right: 0px !important;
     width: 100% !important;
@@ -187,17 +234,20 @@ header {
 }
 
 
-.language-change{
+.language-change {
     margin-right: 10px;
     margin-top: 3px;
 }
-.language-img{
+
+.language-img {
     display: flex;
     align-items: center;
 }
-.language-img img{
+
+.language-img img {
     margin-right: 10px;
 }
+
 .input-group .search {
     border: none !important;
     background-color: #ebebeb !important;
@@ -226,7 +276,6 @@ ul li a {
 }
 
 .custom-dashboard {
-    display: none;
     background: rgb(255, 251, 251);
     position: absolute !important;
     right: 6px !important;
@@ -317,11 +366,12 @@ ul li {
 }
 
 /* left_aside */
-.left-aside{
+.left-aside {
     display: flex;
     align-items: center;
 }
-.left-aside select{
+
+.left-aside select {
     margin-right: 10px;
     padding: 5px;
     margin-top: 2px;
@@ -470,10 +520,11 @@ ul li {
         border-radius: 1.563vw;
     }
 
-    .language-change{
+    .language-change {
         margin-right: 26px;
         margin-top: 13px;
     }
+
     .custom-dashboard {
         right: 0 !important;
         width: 100% !important;

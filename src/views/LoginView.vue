@@ -1,11 +1,13 @@
 <template>
     <div class="container">
-  
-           
+
+
         <div class="login-form">
-            <center><p class="error-message" v-if="error">{{ error }}</p></center>
+           
+                <p class="error-message" v-if="error">{{ error }}</p>
+       
             <h2>Login</h2>
-            <form @submit.prevent="login">
+            <form @submit.prevent="login"> 
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input type="text" id="email" name="email" v-model="form.email"
@@ -24,10 +26,11 @@
 </template>
 <script setup>
 
-import { ref, reactive } from 'vue'
+import { ref, reactive,watchEffect } from 'vue'
 import axios from 'axios'
 import { useRouter } from "vue-router";
 const router = useRouter();
+
 
 let form = reactive(
     {
@@ -42,8 +45,17 @@ const login = async () => {
     await axios.post('http://127.0.0.1:8000/api/login', form).then(res => {
         if (res.data.success) {
             localStorage.setItem('token', res.data.token)
-            alert('aung p');
-            console.log(res.data);
+            alert('succes ');
+            
+            const token = localStorage.getItem('token');
+            axios.get('http://127.0.0.1:8000/api/user', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }).then((response) => {
+               localStorage.setItem('user', JSON.stringify(response.data));
+                localStorage.setItem('auth', true);
+            });
             router.push({ name: 'home' })
         } else {
             error.value = res.data.message;
@@ -52,6 +64,15 @@ const login = async () => {
         errors.value = error.response.data.errors;
     });
 }
+
+
+watchEffect(() => {
+  if (localStorage.hasOwnProperty('auth')) {
+   console.log('dd');
+  }
+
+});
+
 </script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed&family=Sofia+Sans+Condensed&display=swap');
