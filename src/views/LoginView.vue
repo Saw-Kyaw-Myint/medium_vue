@@ -7,6 +7,7 @@
                 <p class="error-message" v-if="error">{{ error }}</p>
        
             <h2>Login</h2>
+
             <form @submit.prevent="login"> 
                 <div class="form-group">
                     <label for="email">Email</label>
@@ -26,10 +27,11 @@
 </template>
 <script setup>
 
-import { ref, reactive,watchEffect } from 'vue'
+import { ref, reactive,watchEffect, watch } from 'vue'
 import axios from 'axios'
-import { useRouter } from "vue-router";
+import { useRouter,useRoute } from "vue-router";
 const router = useRouter();
+
 
 
 let form = reactive(

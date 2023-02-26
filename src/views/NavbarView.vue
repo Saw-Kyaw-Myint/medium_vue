@@ -27,14 +27,11 @@
 </div>
 </template>
 <script setup >
+import $ from "jquery"
 import { RouterLink, RouterView } from 'vue-router'
 </script>
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed&family=Sofia+Sans+Condensed&display=swap');
-
-body {
-    font-family: 'Roboto Condensed', sans-serif;
-}
 
 .container {
     margin: 0 auto;
@@ -93,6 +90,68 @@ ul li {
     max-width: 980px;
 }
 
+
+@media screen and (max-width: 768px) {
+
+.container {
+    padding: 0 40px;
+     width: 100%;
+}
+
+header {
+    background-color: #f8ba16;
+    border-bottom: 1px solid #181212;
+    position: fixed;
+    top: 0;
+    z-index: 10;
+    width: 100%;
+}
+
+.get-button {
+    margin-top: 0;
+    padding: 8px;
+    background-color: #000;
+    color: #fff;
+    border-radius: 20px;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.logo {
+    float: left;
+    font-size: 30px;
+}
+
+.logo img {
+    margin-bottom: -10px;
+}
+
+a {
+    display: block;
+    color: #333333;
+    text-decoration: none;
+}
+
+ul li {
+    list-style: none;
+    margin-right: 20px;
+}
+
+.menu {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 980px;
+}
+
+}
+
 @media screen and (max-width: 640px) {
 
     @keyframes active-menu-bar02 {
@@ -132,7 +191,6 @@ ul li {
 
     .menu {
         display: block;
-
         padding: 1.563vw 1.563vw 3.125vw;
     }
 
@@ -179,7 +237,7 @@ ul li {
 
     header .btn-gnavi {
         position: fixed;
-        top: 3.125vw;
+        top: 2.125vw;
         right: 3.125vw;
         z-index: 3;
         width: 4.688vw;

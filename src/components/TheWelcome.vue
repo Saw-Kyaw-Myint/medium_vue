@@ -8,12 +8,14 @@
                 <a href="{{ route('register.create') }}">Start reading</a>
             </div>
         </section>
+        
         <div class="container">
             <div class="postlist-content">
                 <div class="clearfix">
                     <div class="post-list">
                         <div v-for="(post, index) in posts" :key="index">
-                            <div class="post">
+                           <router-link :to='{name:"detail",params:{id:post?.id}}' class="btn btn-success btn-sm m-2">
+                            <div class="post"> 
                                 <div class="people">
                                     <a href="">
                                         <div class="clearfix">
@@ -86,6 +88,8 @@
                                     </div>
                                 </div>
                             </div>
+                            </router-link>
+                          
                         </div>
 
 
@@ -137,7 +141,7 @@
 </template>
 <script setup>
 import { ref, onMounted,watchEffect } from 'vue';
-import { useRouter,useRoute } from 'vue-router';
+import { useRouter,RouterLink, useRoute } from 'vue-router';
 import moment from 'moment';
 import axios from 'axios';
 
@@ -771,7 +775,7 @@ body {
 }
 
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 640px) {
     .container {
         width: auto;
         padding: 0 40px;
@@ -864,6 +868,7 @@ body {
         float: none;
         width: 100%;
         margin-bottom: 18.003px;
+        border: none;
         border-bottom: 0.998px solid #d3d3d3;
     }
 
