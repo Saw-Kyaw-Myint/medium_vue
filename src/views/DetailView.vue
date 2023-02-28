@@ -14,7 +14,7 @@
 											</div>
 											<div class="name-date">
 												<p>{{ post?.user?.name }}</p>
-												<p class="date">{{ post?.user?.created_at }}</p>
+												<p class="date">{{  formatDate(post?.user?.created_at ) }}</p>
 											</div>
 										</a>
 									</div>
@@ -96,9 +96,10 @@
 </template>
 
 <script setup>
-import { ref, reactive,watch, onMounted, inject } from "vue";
+import { ref, reactive,watch, onMounted, inject, watchEffect } from "vue";
 import ReplyView from "./ReplyView.vue";
 import axios from "axios";
+import moment from 'moment';
 import { useRoute,useRouter,RouterLink } from "vue-router";
 
 const route = useRoute();
@@ -116,23 +117,13 @@ const commentForm = reactive({
 	user_id: user_id,
 	post_id: post_id
 })
-const replyForm = reactive({
-	comment: '',
-	post_id: post_id,
-	user_id: user_id,
-	comment_id: '',
-})
+
 const url = ref('http://127.0.0.1:8000/storage/');
 
-onMounted(async () => {
+watchEffect(async () => {
 	user_id.value=currentUser.value.id;
-	detailPost(route.params.id);
-	commentList();
-});
-
-const detailPost=async(detailId)=>{
 	await axios
-		.get(`http://127.0.0.1:8000/api/posts/${detailId}`)
+		.get(`http://127.0.0.1:8000/api/posts/${route.params.id}`)
 		.then((response) => {
 			post.value = response.data.post;
 			relatedPosts.value = response.data.relatedPosts;
@@ -140,23 +131,27 @@ const detailPost=async(detailId)=>{
 			countPost.value=response.data.countPosts;
 			post_id.value = post.value.id
 		});
+	commentList();
+});
+
+const detailPost=async()=>{
+	
+}
+
+
+function formatDate(date) {
+    return moment(date).format('MMMM Do');
 }
 
 const commentList = async () => {
-	//comment 
 	await axios.get(`http://127.0.0.1:8000/api/comment/${route.params.id}`).then((response) => {
 		comments.value = response.data;
 	})
+  
 }
-watch(() => route.params.id, (newId, oldId) => {
-      // Fetch the item data when the ID changes
-	  const { userName } = newId
-        detailPost(userName)
-    })
 const createComment = async () => {
 	await axios.post('http://127.0.0.1:8000/api/comment', commentForm).then((response) => {
 		commentForm.comment = '';
-		detailPost();
 		commentList();
 	})
 }
