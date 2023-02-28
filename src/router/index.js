@@ -28,8 +28,6 @@ const router = createRouter({
       name: 'detail',
       component: () => import('../views/DetailView.vue')
     },
-   
-   
   ]
 })
 

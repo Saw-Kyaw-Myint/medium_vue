@@ -13,6 +13,7 @@
             <div class="postlist-content">
                 <div class="clearfix">
                     <div class="post-list">
+                        <h2 class="search-result">{{ search }}</h2>
                         <div v-for="(post, index) in posts" :key="index">
                            <router-link :to='{name:"detail",params:{id:post?.id}}' class="btn btn-success btn-sm m-2">
                             <div class="post"> 
@@ -65,20 +66,15 @@
                                             fill="#000"></path>
                                     </svg>
 
-                                    <!-- @if (Auth::user())
-                @if ($post->user->name == Auth::user()->name) -->
                                     <p class="see-tools" onclick="editDelete({{ $post->id }})">
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                                             <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM8.25 12h7.5"
                                                 stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path>
                                         </svg>
                                     </p>
-                                    <!-- @endif
-                @endif -->
+
                                     <div class="tools">
                                         <form action="" method="post">
-                                            <!-- @csrf
-                                        @method('delete') -->
                                             <button class="del-btn">
                                                 Delete
                                             </button>
@@ -92,19 +88,12 @@
                           
                         </div>
 
-
-
-                        <!--second post-->
-                        <!-- @empty -->
-                        <!-- <h2> Result is empty</h2> -->
-                        <!-- @endforelse/ -->
-                        <!-- {{ $posts->onEachSide(5)->links() }} -->
                     </div>
                     <div class="category">
                         <div class="category-list">
                             <h2 class="cate-name">2022 IN Latest Post</h2>
-                            <!-- @foreach ($latestPosts as $lpost) -->
                             <div v-for="(lpost, index) in latestPosts" :key="index">
+                                <router-link :to='{name:"detail",params:{id:lpost?.id}}' >
                                 <div class="latest-post-whole">
                                     <div class="latest-post">
                                         <div class="list-latest-profile">
@@ -116,26 +105,20 @@
                                         </div>
                                     </div>
                                     <a href="{{ route('post.show', $lpost->id) }}">
-                                        <!--post-user-->
                                         <div class="latest-description">{{ latestShort(lpost.description) }}</div>
                                     </a>
                                 </div>
+                            </router-link>
                             </div>
                         </div>
-                        <!-- @endforeach -->
                         <div class="category-item">
-                            <!-- @foreach ($categories as $cat) -->
-
                             <a  v-for="(category, index) in categories"
                                 :key="index" @click="searchCategory(category.ctitle)">{{ category.ctitle }}</a>
-
-                            <!-- @endforeach -->
                         </div>
                     </div>
 
                 </div>
             </div>
-            <!--right-category-->
         </div>
     </div>
 </template>
@@ -151,13 +134,13 @@ const getroute=useRoute();
 const posts = ref([]);
 const latestPosts = ref([]);
 const categories = ref([]);
+const search=ref('');
 const notAuth=ref(true);
 const user=ref();
 
 const url = ref('http://127.0.0.1:8000/storage/');
 
 watchEffect(() => {
-    
    user.value=localStorage.getItem('user');
    console.log(user.value);
 
@@ -169,6 +152,7 @@ watchEffect(() => {
             q: getroute.query.q
         }
     }).then((response) => {
+        search.value=response.data.search;
         posts.value = response.data.posts;
         latestPosts.value = response.data.latestPosts;
         categories.value = response.data.categories;
@@ -184,6 +168,7 @@ const searchCategory= async(category)=>{
     axios.get(`http://127.0.0.1:8000/api/${category}`).then((response) => {
         console.log(response.data);
         posts.value = response.data.posts;
+        search.value=response.data.search;
         latestPosts.value = response.data.latestPosts;
         categories.value = response.data.categories;
     });

@@ -10,7 +10,7 @@
 									<div class="clearfix">
 										<a href="">
 											<div class="profile-picture">
-												<img :src="url + post.image" alt="" width="20px" height="20px" />
+												<img :src="url + post.user?.profile" alt="" width="20px" height="20px" />
 											</div>
 											<div class="name-date">
 												<p>{{ post?.user?.name }}</p>
@@ -19,17 +19,11 @@
 										</a>
 									</div>
 								</div>
-								<!--@if (Auth::user())
-                            @if (Auth::user()->id==$post->user->id)-->
 								<div class="right-header">
 									<form action="" method="post">
-										<!--@csrf
-                                    @method('delete')-->
 										<button class="del-btn">Delete</button>
 									</form>
 								</div>
-								<!--@endif
-                            @endif-->
 							</div>
 						</div>
 						<div class="post-img">
@@ -44,28 +38,27 @@
 				<div class="right-detail">
 					<div class="detail-left-profile">
 						<div class="left-profile-image">
-							<img src="" alt="" />
+							<img :src="url + post.user?.profile" alt="" />
 						</div>
-						<p class="profile-name">postname</p>
-						<p class="count-post">count post</p>
+						<p class="profile-name">{{ post.user?.name }}</p>
+						<p class="count-post">{{ countPost }}</p>
 						<p class="post-reasion">
 							<!--{{ $post->bio }}-->
 						</p>
 					</div>
-					<!--left detail post-->
 
+					<!--related post-->
 					<div class="related-category">
 						<h2>More from Medium</h2>
-						<!--@foreach ($relatedPosts as $rPost)-->
-						<a href="">
-							<div class="category-post clearfix">
+							<div class="category-post clearfix" v-for="(relatePost, index) in relatedPosts" :key="index">
+								<router-link :to='{name:"detail",params:{id:relatePost?.id}}' >
 								<div class="left-side">
 									<div class="left-side-header">
-										<img src="" alt="" class="category-profile" />
-										<p class="category-profile-name">user name</p>
+										<img :src="url+relatePost.user?.profile" alt="" class="category-profile" />
+										<p class="category-profile-name">{{ relatePost.user?.name }}</p>
 									</div>
 									<div class="rel-detail">
-										<p class="category-short-description">rpost title</p>
+										<p class="category-short-description">{{ relatePost.title }}</p>
 										<svg width="25" height="25" viewBox="0 0 25 25" fill="none" class="mb">
 											<path
 												d="M18 2.5a.5.5 0 0 1 1 0V5h2.5a.5.5 0 0 1 0 1H19v2.5a.5.5 0 1 1-1 0V6h-2.5a.5.5 0 0 1 0-1H18V2.5zM7 7a1 1 0 0 1 1-1h3.5a.5.5 0 0 0 0-1H8a2 2 0 0 0-2 2v14a.5.5 0 0 0 .8.4l5.7-4.4 5.7 4.4a.5.5 0 0 0 .8-.4v-8.5a.5.5 0 0 0-1 0v7.48l-5.2-4a.5.5 0 0 0-.6 0l-5.2 4V7z"
@@ -73,9 +66,8 @@
 										</svg>
 									</div>
 								</div>
+							</router-link>
 							</div>
-						</a>
-						<!--@endforeach-->
 					</div>
 				</div>
 			</div>
@@ -84,10 +76,9 @@
 			<!-- comment  -->
 			<section class="comment">
 				<h2 class="">
-					<!--{{ __("message.comment") }}-->
-					<span class="comment-count">total count</span>
+					<span class="comment-count">{{ commentCount }}</span>
 				</h2>
-				<p class="comment-here">message in here</p>
+				<p class="comment-here">Message in here</p>
 				<form @submit.prevent="createComment">
 					<textarea name="comment" id="" v-model="commentForm.comment"
 						placeholder="{{ __('message.comment_placeholder') }}" class="comment-description"
@@ -96,182 +87,8 @@
 					<input type="submit" class="comment-btn" value="comment" />
 				</form>
 
-				<!-- comment  -->
-				<div v-for="(comment, index) in comments " :key="index"
-					class="display-comment {{ $comment->parent_id != null ? 'mg-3' : ' ' }}">
-
-					<div class="reply">
-						<div class="reply-header clearfix">
-							<div class="reply-profile">
-								<img :src="url + comment.user.profile" alt="" width="20px" height="20px">
-							</div>
-							<div class="left-detail">
-								<h3>
-									{{ comment.user.name }}
-								</h3>
-								<p>
-									{{ comment.created_at }}
-								</p>
-							</div>
-						</div>
-
-						<p class="reply-text" @dblclick="comment.edit = 1">
-							{{ comment.comment }}
-						</p>
-
-						<!-- comment update  -->
-						<form class="" v-if="comment.edit == 1"
-							@submit.prevent="updateComment(comment.id, comment.comment), comment.edit = 0">
-							<input type="text" id="edit-comtext" class="reply{{ $comment->id }}" v-model="comment.comment"
-								name="comment">
-							<input type="hidden" name="post_id" v-model="updateForm.post_id" />
-						</form>
-
-
-
-						<div class="comment-btn-group">
-							<button href="/delete/{{ $comment->id }}" @click="deleteComment(comment.id)"
-								class="delete-comment">delete
-							</button>
-							<p><button @click="comment.reply=1" class="comment-reply">reply</button></p>
-						</div>
-					</div>
-					<!-- reply  -->
-					<div class="reply-form" v-if="comment.reply==1">
-						<form @submit.prevent="reply(comment.id)">
-							<div class="form-group">
-								<textarea type="text" v-model="replyForm.comment" name="comment" class="reply-box" required
-									placeholder="Reply in here"></textarea>
-								<input type="hidden" name="post_id" v-model="replyForm.post_id">
-								<input type="hidden" name="comment_id" v-model="replyForm.user_id" />
-							</div>
-							<div class="">
-								<input type="submit" class="reply-btn" style="font-size: 0.8em;" value="Reply" />
-							</div>
-						</form>
-					</div> <!--reply-->
-
-					<!-- comment reply  -->
-					<div v-for="(reply, index) in comment.replies " :key="index"
-						class="display-comment {{ $comment->parent_id != null ? 'mg-3' : ' ' }}">
-
-						<div class="reply mg-3">
-							<div class="reply-header clearfix">
-								<div class="reply-profile">
-									<img :src="url + comment.user.profile" alt="" width="20px" height="20px">
-								</div>
-								<div class="left-detail">
-									<h3>
-										{{ comment.user.name }}
-									</h3>
-									<p>
-										{{ reply.created_at }}
-									</p>
-								</div>
-							</div>
-
-							<p class="reply-text" @dblclick="comment.edit = 1">
-								{{ reply.comment }}
-							</p>
-
-							<!-- comment update  -->
-							<form class="" v-if="comment.edit == 1"
-								@submit.prevent="updateComment(comment.id, comment.comment), comment.edit = 0">
-								<input type="text" id="edit-comtext" class="reply{{ $comment->id }}"
-									v-model="comment.comment" name="comment">
-								<input type="hidden" name="post_id" v-model="updateForm.post_id" />
-							</form>
-
-
-
-							<div class="comment-btn-group">
-								<button @click="deleteComment(reply.id)" class="delete-comment">delete
-								</button>
-								<p><button href="#ex{{ $comment->id }}" class="comment-reply">reply</button></p>
-							</div>
-						</div>
-						<!-- reply  -->
-						<div class="reply-form mg-3" v-if="comment.reply==1">
-							{{ replyForm }}
-							<form @submit.prevent="doubleReply(reply.id)">
-								<div class="form-group">
-									<textarea type="text" v-model="replyForm.comment" name="comment" class="reply-box"
-										required placeholder="Reply in here"></textarea>
-									<input type="hidden" name="post_id" v-model="replyForm.post_id">
-									<input type="hidden" name="comment_id" v-model="replyForm.user_id" />
-								</div>
-								<div class="">
-									<input type="submit" class="reply-btn" style="font-size: 0.8em;" value="Reply" />
-								</div>
-							</form>
-						</div>
-
-						<!-- comment reply  -->
-
-						<!-- comment reply  -->
-						<div v-for="(dreply, index) in reply.replies " :key="index"
-							class="display-comment {{ $comment->parent_id != null ? 'mg-3' : ' ' }}">
-
-							<div class="reply mg-6">
-								<div class="reply-header clearfix">
-									<div class="reply-profile">
-										<img :src="url + comment.user.profile" alt="" width="20px" height="20px">
-									</div>
-									<div class="left-detail">
-										<h3>
-											{{ comment.user.name }}
-										</h3>
-										<p>
-											{{ reply.created_at }}
-										</p>
-									</div>
-								</div>
-
-								<p class="reply-text" @dblclick="comment.edit = 1">
-									{{ dreply.comment }}
-								</p>
-
-								<!-- comment update  -->
-								<form class="" v-if="comment.edit == 1"
-									@submit.prevent="updateComment(comment.id, comment.comment), comment.edit = 0">
-									<input type="text" id="edit-comtext" class="reply{{ $comment->id }}"
-										v-model="comment.comment" name="comment">
-									<input type="hidden" name="post_id" v-model="updateForm.post_id" />
-								</form>
-
-
-
-								<div class="comment-btn-group">
-									<button @click="deleteComment(reply.id)" class="delete-comment">delete
-									</button>
-									<p><button href="#ex{{ $comment->id }}" class="comment-reply">reply</button></p>
-								</div>
-							</div>
-
-
-							<!-- reply  -->
-							<div class="reply-form mg-3" v-if="comment.reply==1">
-								{{ replyForm }}
-								<form @submit.prevent="doubleReply(reply.id)">
-									<div class="form-group">
-										<textarea type="text" v-model="replyForm.comment" name="comment" class="reply-box"
-											required placeholder="Reply in here"></textarea>
-										<input type="hidden" name="post_id" v-model="replyForm.post_id">
-										<input type="hidden" name="comment_id" v-model="replyForm.user_id" />
-									</div>
-									<div class="">
-										<input type="submit" class="reply-btn" style="font-size: 0.8em;" value="Reply" />
-									</div>
-								</form>
-							</div>
-
-							<!-- comment reply  -->
-
-
-						</div>
-					</div>
-				</div>
-
+				<ReplyView :comments="comments" :postId="post.id" :userId="user_id" @listComment="commentList()">
+				</ReplyView>
 
 			</section>
 		</div>
@@ -279,26 +96,26 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive,watch, onMounted, inject } from "vue";
+import ReplyView from "./ReplyView.vue";
 import axios from "axios";
-import { useRoute } from "vue-router";
+import { useRoute,useRouter,RouterLink } from "vue-router";
 
 const route = useRoute();
 const post = ref({});
 const relatedPosts = ref();
 const comments = ref();
 const user_id = ref();
+const commentCount=ref('');
 const post_id = ref();
+const countPost=ref();
+const currentUser=ref(JSON.parse(localStorage.getItem('user')));
+
 const commentForm = reactive({
 	comment: '',
 	user_id: user_id,
 	post_id: post_id
 })
-const updateForm = reactive({
-	comment: '',
-	post_id: '',
-	comment_id: '',
-});
 const replyForm = reactive({
 	comment: '',
 	post_id: post_id,
@@ -307,18 +124,23 @@ const replyForm = reactive({
 })
 const url = ref('http://127.0.0.1:8000/storage/');
 
-
 onMounted(async () => {
-	await axios
-		.get(`http://127.0.0.1:8000/api/posts/${route.params.id}`)
-		.then((response) => {
-			post.value = response.data.post
-			relatedPosts.value = response.data.relatedPosts
-			user_id.value = post.value.user.id
-			post_id.value = post.value.id
-		});
+	user_id.value=currentUser.value.id;
+	detailPost(route.params.id);
 	commentList();
 });
+
+const detailPost=async(detailId)=>{
+	await axios
+		.get(`http://127.0.0.1:8000/api/posts/${detailId}`)
+		.then((response) => {
+			post.value = response.data.post;
+			relatedPosts.value = response.data.relatedPosts;
+			commentCount.value=response.data.commentsTotal;
+			countPost.value=response.data.countPosts;
+			post_id.value = post.value.id
+		});
+}
 
 const commentList = async () => {
 	//comment 
@@ -326,58 +148,33 @@ const commentList = async () => {
 		comments.value = response.data;
 	})
 }
-
+watch(() => route.params.id, (newId, oldId) => {
+      // Fetch the item data when the ID changes
+	  const { userName } = newId
+        detailPost(userName)
+    })
 const createComment = async () => {
 	await axios.post('http://127.0.0.1:8000/api/comment', commentForm).then((response) => {
 		commentForm.comment = '';
+		detailPost();
 		commentList();
 	})
 }
 
-const deleteComment = async (id) => {
-	await axios.delete(`http://127.0.0.1:8000/api/comment/${id}`)
-		.then((response) => {
-			console.log(response);
-			commentList();
-		})
-}
 
-const updateComment = async (id, comment) => {
-	updateForm.comment_id = id;
-	updateForm.comment = comment;
-
-	await axios.post('http://127.0.0.1:8000/api/updateComment', updateForm).then((response) => {
-		console.log(response.data)
-		commentList;
-	})
-
-}
-
-const reply = async (id) => {
-	replyForm.comment_id = id;
-	await axios.post('http://127.0.0.1:8000/api/reply', replyForm).then((response) => {
-		commentList();
-	});
-}
-
-const doubleReply = async (id) => {
-	replyForm.comment_id = id;
-	await axios.post('http://127.0.0.1:8000/api/reply', replyForm).then((response) => {
-		commentList();
-	});
-}
 </script>
 
-<style  scoped>
+<style  >
 @import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed&family=Sofia+Sans+Condensed&display=swap");
 
 body {
 	font-family: "Roboto Condensed", sans-serif;
 }
 
-.mg-6{
+.mg-6 {
 	margin-left: 100px;
 }
+
 .container {
 	width: 1150px;
 	margin: 0 auto;
@@ -410,7 +207,7 @@ body {
 	padding: 5px 0;
 	background-color: #8180f9;
 	color: white;
-
+    border: none;
 	text-align: center;
 	text-transform: capitalize;
 	border-radius: 10px;
@@ -422,6 +219,7 @@ body {
 
 .reply-btn {
 	padding: 8px 15px;
+	border: none;
 	border: none;
 	background: #6060c1;
 	color: #fff;
@@ -478,6 +276,7 @@ body {
 .right-header button {
 	display: inline-block;
 	padding: 10px 15px;
+	border: none;
 	background-color: rgb(255, 0, 0);
 	color: #fff;
 	border-radius: 20px;
@@ -549,6 +348,7 @@ body {
 .delete-comment {
 	display: inline-block;
 	margin-right: 10px;
+	border: none;
 	padding: 5px 10px;
 	background-color: #ff0a0a;
 	color: #fff;
@@ -608,7 +408,7 @@ body {
 }
 
 .mg-3 {
-	margin-left: 60px;
+	margin-left: 40px;
 }
 
 .left-detail p {
@@ -1041,6 +841,7 @@ body {
 	.right-header a {
 		display: inline-block;
 		padding: 0.781vw 1.563vw;
+		border: none;
 		background-color: rgb(255, 0, 0);
 		color: #fff;
 		border-radius: 3.125vw;
