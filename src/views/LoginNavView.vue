@@ -47,6 +47,7 @@
                         <nav id="global-navi">
                             <ul class="menu">
                                 <!-- @if (Auth::user()) -->
+                                <router-link to="/post/create">
                                 <li class="left-write">
                                     <a href="{{ route('post.create') }}" class="write-link">
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-label="Write">
@@ -58,6 +59,7 @@
                                                 stroke="currentColor"></path>
                                         </svg><span>Write</span></a>
                                 </li>
+                            </router-link>
                                 
                                 <li class="menu-toggle" @click="slideBoard">
                                     <div class="select-box">

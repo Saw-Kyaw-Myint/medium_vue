@@ -8,57 +8,62 @@
                 <a href="{{ route('register.create') }}">Start reading</a>
             </div>
         </section>
-        
+
         <div class="container">
             <div class="postlist-content">
                 <div class="clearfix">
                     <div class="post-list">
                         <h2 class="search-result">{{ search }}</h2>
                         <div v-for="(post, index) in posts" :key="index">
-                           <router-link :to='{name:"detail",params:{id:post?.id}}' class="btn btn-success btn-sm m-2">
-                            <div class="post"> 
-                                <div class="people">
-                                    <a href="">
-                                        <div class="clearfix">
-                                            <div class="profile-img">
-                                                <img :src="url + post.user?.profile" class="create-user-img"
-                                                    onerror="this.onerror=null;this.src='';">
+                            <div class="post">
+                                <router-link :to='{ name: "detail", params: { id: post?.id } }' class="btn btn-success btn-sm m-2">
+                                    <div class="people">
+                                        <a href="">
+                                            <div class="clearfix">
+                                                <div class="profile-img">
+                                                    <img :src="url + post.user?.profile" class="create-user-img"
+                                                        onerror="this.onerror=null;this.src='';">
+                                                </div>
+                                                <p class="name">{{ post.user.name }}</p>
                                             </div>
-                                            <p class="name">{{ post.user.name }}</p>
-                                        </div>
-                                    </a>
-                                </div>
-                                <a >
-                                    <div class="clearfix">
-                                        <div class="post-text">
+                                        </a>
+                                    </div>
+                                    <a>
+                                        <div class="clearfix">
+                                            <div class="post-text">
 
-                                            <!--post-user-->
+                                                <!--post-user-->
 
-                                            <div>
-                                                <h2 class="post-title">{{ post.title }}</h2>
-                                                <p class="post-description">
-                                                    {{ short(post.description) }}</p>
-                                                <div class="post-footer">
-                                                    <div class="postfo-left">
-                                                   
-                                                            <a v-for="(category, index) in post.categories"  :key="index" @click="searchCategory(category.ctitle)">
-                                                              <span>{{ category.ctitle }}</span>  
+                                                <div>
+                                                    <h2 class="post-title">{{ post.title }}</h2>
+                                                    <p class="post-description">
+                                                        {{ short(post.description) }}</p>
+                                                    <div class="post-footer">
+                                                        <div class="postfo-left">
+
+                                                            <a v-for="(category, index) in post.categories" :key="index"
+                                                                @click="searchCategory(category.ctitle)">
+                                                                <span>{{ category.ctitle }}</span>
                                                             </a>
 
-                                                    </div>
-                                                    <p class="post-date">{{ formatDate(post.created_at) }} <span>{{
-                                                        minuteAgo(post.created_at) }}</span></p>
+                                                        </div>
+                                                        <p class="post-date">
+                                                            <!-- {{ formatDate(post.created_at) }}  -->
+                                                            <span>{{
+                                                                minuteAgo(post.created_at) }}</span>
+                                                        </p>
 
+                                                    </div>
                                                 </div>
                                             </div>
+                                            <div class="post-img">
+                                                <img :src="url + post.image" alt="" width="100%" height="100%"
+                                                    onerror="this.onerror=null;this.src='../assets/template/people.jfif';">
+                                            </div>
+                                            <!--post-left-->
                                         </div>
-                                        <div class="post-img">
-                                            <img :src="url + post.image" alt="" width="100%" height="100%"
-                                                onerror="this.onerror=null;this.src='../assets/template/people.jfif';">
-                                        </div>
-                                        <!--post-left-->
-                                    </div>
-                                </a>
+                                    </a>
+                                </router-link>
                                 <div class="postfo-right">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="tr">
                                         <path
@@ -66,26 +71,25 @@
                                             fill="#000"></path>
                                     </svg>
 
-                                    <p class="see-tools" onclick="editDelete({{ $post->id }})">
+                                    <p class="see-tools" onclick="editDelete({{ $post->id }})"
+                                        @click="post.edit = !post.edit">
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                                             <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM8.25 12h7.5"
                                                 stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path>
                                         </svg>
                                     </p>
 
-                                    <div class="tools">
-                                        <form action="" method="post">
-                                            <button class="del-btn">
+                                    <div class="tools" v-if="post.edit == 1">
+                                            <button class="del-btn" @click="postDelete(post.id)">
                                                 Delete
                                             </button>
-                                        </form>
                                         <a href="{{ route('post.edit', $post->id) }}">Edit
                                         </a>
                                     </div>
                                 </div>
                             </div>
-                            </router-link>
-                          
+
+
                         </div>
 
                     </div>
@@ -93,27 +97,27 @@
                         <div class="category-list">
                             <h2 class="cate-name">2022 IN Latest Post</h2>
                             <div v-for="(lpost, index) in latestPosts" :key="index">
-                                <router-link :to='{name:"detail",params:{id:lpost?.id}}' >
-                                <div class="latest-post-whole">
-                                    <div class="latest-post">
-                                        <div class="list-latest-profile">
-                                            <a href="{{ route('user.profile',$lpost->user->id) }}">
-                                                <img :src="url + lpost.user.profile" alt="" width="100%" height="100%"
-                                                    onerror="this.onerror=null;this.src='{{ asset('template/people.jfif') }}';">
-                                                <p class="name">{{ lpost.user.name }}</p>
-                                            </a>
+                                <router-link :to='{ name: "detail", params: { id: lpost?.id } }'>
+                                    <div class="latest-post-whole">
+                                        <div class="latest-post">
+                                            <div class="list-latest-profile">
+                                                <a href="{{ route('user.profile',$lpost->user->id) }}">
+                                                    <img :src="url + lpost.user.profile" alt="" width="100%" height="100%"
+                                                        onerror="this.onerror=null;this.src='{{ asset('template/people.jfif') }}';">
+                                                    <p class="name">{{ lpost.user.name }}</p>
+                                                </a>
+                                            </div>
                                         </div>
+                                        <a href="{{ route('post.show', $lpost->id) }}">
+                                            <div class="latest-description">{{ latestShort(lpost.description) }}</div>
+                                        </a>
                                     </div>
-                                    <a href="{{ route('post.show', $lpost->id) }}">
-                                        <div class="latest-description">{{ latestShort(lpost.description) }}</div>
-                                    </a>
-                                </div>
-                            </router-link>
+                                </router-link>
                             </div>
                         </div>
                         <div class="category-item">
-                            <a  v-for="(category, index) in categories"
-                                :key="index" @click="searchCategory(category.ctitle)">{{ category.ctitle }}</a>
+                            <a v-for="(category, index) in categories" :key="index"
+                                @click="searchCategory(category.ctitle)">{{ category.ctitle }}</a>
                         </div>
                     </div>
 
@@ -123,78 +127,80 @@
     </div>
 </template>
 <script setup>
-import { ref, onMounted,watchEffect } from 'vue';
-import { useRouter,RouterLink, useRoute } from 'vue-router';
+import { ref, onMounted, watchEffect } from 'vue';
+import { useRouter, RouterLink, useRoute } from 'vue-router';
 import moment from 'moment';
 import axios from 'axios';
 
 
-const route=useRouter();
-const getroute=useRoute();
+const router = useRouter();
+const getroute = useRoute();
 const posts = ref([]);
 const latestPosts = ref([]);
 const categories = ref([]);
-const search=ref('');
-const notAuth=ref(true);
-const user=ref();
+const search = ref('');
+const notAuth = ref(true);
+const user = ref();
 
 const url = ref('http://127.0.0.1:8000/storage/');
 
 watchEffect(() => {
-   user.value=localStorage.getItem('user');
-   console.log(user.value);
+    user.value = localStorage.getItem('user');
+    console.log(user.value);
 
-    if(localStorage.getItem('auth')){
-        notAuth.value=false;
+    if (localStorage.getItem('auth')) {
+        notAuth.value = false;
     }
-      axios.get('http://127.0.0.1:8000/api/posts',  {
+    axios.get('http://127.0.0.1:8000/api/posts', {
         params: {
             q: getroute.query.q
         }
     }).then((response) => {
-        search.value=response.data.search;
+        search.value = response.data.search;
         posts.value = response.data.posts;
         latestPosts.value = response.data.latestPosts;
         categories.value = response.data.categories;
     });
-    });
+});
 
-onMounted(async () => {
-  
-})
-
-
-
-const searchCategory= async(category)=>{
+const searchCategory = async (category) => {
     axios.get(`http://127.0.0.1:8000/api/${category}`).then((response) => {
         console.log(response.data);
         posts.value = response.data.posts;
-        search.value=response.data.search;
+        search.value = response.data.search;
         latestPosts.value = response.data.latestPosts;
         categories.value = response.data.categories;
     });
 }
 
-
-function formatDate(date) {
+const formatDate = (date) => {
     return moment(date).format('MMMM Do');
 }
-function minuteAgo(date) {
+
+const minuteAgo = (date) => {
     return moment(date).fromNow();
 }
-function short(value) {
+
+const short = (value) => {
     if (value.length > 70) {
-        return value.slice(0, 70) + "...";
+        return value.slice(0, 100) + "...";
     } else {
         return value;
     }
 }
-function latestShort(value) {
+
+const latestShort = (value) => {
     if (value.length > 20) {
         return value.slice(0, 20) + "...";
     } else {
         return value;
     }
+}
+
+const postDelete=async(id)=>{
+await axios.delete(`http://127.0.0.1:8000/api/posts/${id}`).then((response)=>{
+    router.push('/home')
+})
 }
 </script>
 <style scoped>
@@ -213,6 +219,10 @@ body {
     width: 1100px;
     margin: 0 auto;
 
+}
+
+.see-tools {
+    cursor: pointer;
 }
 
 .vender {
@@ -262,9 +272,10 @@ body {
 }
 
 .tools {
-    display: none;
+    display: block;
     position: absolute;
     left: 12px;
+    box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
     padding: 5px 0px 5px 5px;
     padding: 6px 20px;
     border: 1px solid #d5d5d5;
@@ -441,7 +452,7 @@ body {
 .postfo-right {
     display: flex;
     position: absolute;
-    bottom: 28px;
+    bottom: 10%;
     left: 300px;
     align-items: center;
     z-index: 2;

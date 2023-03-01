@@ -29,7 +29,7 @@
 
 import { ref, reactive,watchEffect, watch } from 'vue'
 import axios from 'axios'
-import { useRouter,useRoute } from "vue-router";
+import { useRouter } from "vue-router";
 const router = useRouter();
 
 
