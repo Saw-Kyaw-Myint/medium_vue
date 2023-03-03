@@ -48,24 +48,24 @@
                             <ul class="menu">
                                 <!-- @if (Auth::user()) -->
                                 <router-link to="/post/create">
-                                <li class="left-write">
-                                    <a href="{{ route('post.create') }}" class="write-link">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-label="Write">
-                                            <path
-                                                d="M14 4a.5.5 0 0 0 0-1v1zm7 6a.5.5 0 0 0-1 0h1zm-7-7H4v1h10V3zM3 4v16h1V4H3zm1 17h16v-1H4v1zm17-1V10h-1v10h1zm-1 1a1 1 0 0 0 1-1h-1v1zM3 20a1 1 0 0 0 1 1v-1H3zM4 3a1 1 0 0 0-1 1h1V3z"
-                                                fill="currentColor"></path>
-                                            <path
-                                                d="M17.5 4.5l-8.46 8.46a.25.25 0 0 0-.06.1l-.82 2.47c-.07.2.12.38.31.31l2.47-.82a.25.25 0 0 0 .1-.06L19.5 6.5m-2-2l2.32-2.32c.1-.1.26-.1.36 0l1.64 1.64c.1.1.1.26 0 .36L19.5 6.5m-2-2l2 2"
-                                                stroke="currentColor"></path>
-                                        </svg><span>Write</span></a>
-                                </li>
-                            </router-link>
-                                
+                                    <li class="left-write">
+                                        <a href="{{ route('post.create') }}" class="write-link">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-label="Write">
+                                                <path
+                                                    d="M14 4a.5.5 0 0 0 0-1v1zm7 6a.5.5 0 0 0-1 0h1zm-7-7H4v1h10V3zM3 4v16h1V4H3zm1 17h16v-1H4v1zm17-1V10h-1v10h1zm-1 1a1 1 0 0 0 1-1h-1v1zM3 20a1 1 0 0 0 1 1v-1H3zM4 3a1 1 0 0 0-1 1h1V3z"
+                                                    fill="currentColor"></path>
+                                                <path
+                                                    d="M17.5 4.5l-8.46 8.46a.25.25 0 0 0-.06.1l-.82 2.47c-.07.2.12.38.31.31l2.47-.82a.25.25 0 0 0 .1-.06L19.5 6.5m-2-2l2.32-2.32c.1-.1.26-.1.36 0l1.64 1.64c.1.1.1.26 0 .36L19.5 6.5m-2-2l2 2"
+                                                    stroke="currentColor"></path>
+                                            </svg><span>Write</span></a>
+                                    </li>
+                                </router-link>
+
                                 <li class="menu-toggle" @click="slideBoard">
                                     <div class="select-box">
                                         <div class="small-menu">
                                             <!-- @if (Auth::user()) -->
-                                            <img :src="url+user.profile" alt="">
+                                            <img :src="url + user.profile" alt="">
                                             <p class="down-icon">
                                                 <svg width="12px" height="12px" viewBox="0 0 15 15">
                                                     <path
@@ -77,13 +77,13 @@
                                     </div>
                                 </li>
                                 <div class="custom-dashboard" v-if="customBoard" @dblclick="customBoard = false">
-                                    <p><a href=""><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                                aria-label="Profile">
+                                    <p><router-link :to="{ name: 'profile', params: { id: user?.id } }" @click="customBoard=false"><svg width="24"
+                                                height="24" viewBox="0 0 24 24" fill="none" aria-label="Profile">
                                                 <circle cx="12" cy="7" r="4.5" stroke="currentColor">
                                                 </circle>
                                                 <path d="M3.5 21.5v-4.34C3.5 15.4 7.3 14 12 14s8.5 1.41 8.5 3.16v4.34"
                                                     stroke="currentColor" stroke-linecap="round"></path>
-                                            </svg> profile</a></p>
+                                            </svg> profile</router-link></p>
                                     <p><a href=""><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                                 aria-label="Lists">
                                                 <path
@@ -92,7 +92,7 @@
                                                 <path d="M12.5 2.75h-8a2 2 0 0 0-2 2v11.5" stroke="currentColor"
                                                     stroke-linecap="round"></path>
                                             </svg>post list</a></p>
-
+                                            
                                     <p class="custom-logout"><button @click="logout"> logout</button></p>
 
                                 </div>
@@ -107,7 +107,7 @@
 </template>
 
 <script setup>
-import { ref,watchEffect } from 'vue';
+import { ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 
@@ -115,13 +115,13 @@ import axios from 'axios';
 const router = useRouter();
 const searchVal = ref();
 const customBoard = ref(false);
-const user=ref();
+const user = ref();
 
 const url = ref('http://127.0.0.1:8000/storage/');
 
 watchEffect(() => {
-user.value=JSON.parse(localStorage.getItem('user'));
- });
+    user.value = JSON.parse(localStorage.getItem('user'));
+});
 //function
 const slideBoard = () => {
     customBoard.value = !(customBoard.value);
@@ -129,6 +129,7 @@ const slideBoard = () => {
 const postSearch = () => {
     if (searchVal.value.trim() !== '') {
         router.push({ name: 'home', query: { q: searchVal.value } });
+        searchVal.value = ''
     } else {
         router.push({ name: 'home' })
     }
@@ -391,7 +392,11 @@ ul li {
     }
 
     .login-hright {
-        margin-top: 2.344vw;
+        margin-top: -0.456vw;
+    }
+
+    .language-change {
+        margin-top: -0.656vw !important;
     }
 
     .logo {

@@ -11,8 +11,9 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
-      redirect:'/home',
-      props: route => ({ query: route.query.q || '' })
+      props: route => ({ 
+        query: route.query.q || '', 
+        query: route.query.category || ''  })
     },
     {
       path: '/login',
@@ -33,6 +34,16 @@ const router = createRouter({
       path: '/post/create',
       name: 'post/create',
       component: () => import('../views/Post/CreateView.vue')
+    },
+    {
+      path: '/post/edit/:id',
+      name: 'edit',
+      component: () => import('../views/Post/EditView.vue')
+    },
+    {
+      path: '/profile/:id',
+      name: 'profile',
+      component: () => import('../views/ProfileView.vue')
     },
   ]
 })

@@ -1,11 +1,10 @@
 <template>
     <div class="container">
         <div class="post-whole">
-            <h2>Post Create</h2>
-            <form @submit.prevent="storePost">
+            <h2>Post Edit</h2>
+            <form @submit.prevent="updatePost">
                 <div class="post-title">
                     <input type="text" name="title" placeholder="Post Title" v-model="postForm.title">
-
                     <p class="error-message">{{ errors?.title }}</p>
 
                 </div>
@@ -31,10 +30,10 @@
 
                     <p class="error-message">{{ errors?.image }}</p>
                     <img :src="previewImage" v-if="previewImage" id="output" onerror="this.onerror=null;this.src='./img/image1.jpg';">
-                    <img src="./img/images.jpg" v-else id="output">
+                    <img :src="url+post?.image" v-else id="output">
                 </div>
                 <div class="description">
-                    <textarea id="description-area" name="description" rows="5"
+                    <textarea id="description-area" name="description" rows="5" 
                         v-model="postForm.description" placeholder="write  Description about post"></textarea>
 
                     <p class="error-message">{{ errors?.description }}</p>
@@ -48,14 +47,17 @@
 <script setup >
 import axios from 'axios';
 import { ref, onMounted, reactive } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter,useRoute } from 'vue-router';
 
 const router = useRouter();
+const route=useRoute();
 const imageFile = ref(null);
 const previewImage = ref(null);
 const currentUser = ref(JSON.parse(localStorage.getItem('user')));
 const categories = ref([]);
 const errors=ref(null);
+const post=ref(null);
+const url = ref('http://127.0.0.1:8000/storage/');
 
 const postForm = reactive({
     title: '',
@@ -66,8 +68,12 @@ const postForm = reactive({
 })
 
 onMounted(() => {
-    axios.get('http://127.0.0.1:8000/api/posts/create').then((response) => {
+    axios.get(`http://127.0.0.1:8000/api/post/edit/${route.params.id}`).then((response) => {
         categories.value = response.data.categories;
+        post.value=response.data.post;
+        postForm.title=response.data.post.title;
+        postForm.category=response.data.post.categories;
+        postForm.description=response.data.post.description;
     });
 })
 
@@ -84,14 +90,15 @@ const handleImageChange = (event) => {
     }
 };
 
-const storePost = async () => {
+const updatePost = async () => {
     const config = {
         headers: {
             "content-type": "multipart/form-data",
         },
     };
-    await axios.post('http://127.0.0.1:8000/api/posts', postForm, config).then((response) => {
-        router.push({ name: 'home' });
+    await axios.post(`http://127.0.0.1:8000/api/post/update/${route.params.id}`, postForm, config).then((response) => {
+       
+     router.push({ name: 'home' });
     }).catch(function (error) {
    errors.value=error.response.data.errors;
    console.log(error.response.data.errors);
@@ -197,8 +204,6 @@ option {
 #description-area{
     width: 100%;
 }
-
-
 .publish {
     padding: 8px 15px;
     border: none;
@@ -250,7 +255,7 @@ option {
     .description {
         margin-bottom: 1.042vw;
     }
-  
+
     .publish {
         padding: 0.781vw 1.693vw;
         border: none;

@@ -16,9 +16,9 @@
                         <h2 class="search-result">{{ search }}</h2>
                         <div v-for="(post, index) in posts" :key="index">
                             <div class="post">
-                                <router-link :to='{ name: "detail", params: { id: post?.id } }' class="btn btn-success btn-sm m-2">
+                             
                                     <div class="people">
-                                        <a href="">
+                                       <router-link :to="{name:'profile',params:{id:post.user.id}}">
                                             <div class="clearfix">
                                                 <div class="profile-img">
                                                     <img :src="url + post.user?.profile" class="create-user-img"
@@ -26,9 +26,9 @@
                                                 </div>
                                                 <p class="name">{{ post.user.name }}</p>
                                             </div>
-                                        </a>
+                                        </router-link>
                                     </div>
-                                    <a>
+                                    <router-link :to="{name:'detail',params:{id:post.id}}">
                                         <div class="clearfix">
                                             <div class="post-text">
 
@@ -44,7 +44,7 @@
                                                             <a v-for="(category, index) in post.categories" :key="index"
                                                                 @click="searchCategory(category.ctitle)">
                                                                 <span>{{ category.ctitle }}</span>
-                                                            </a>
+                                                           </a>
 
                                                         </div>
                                                         <p class="post-date">
@@ -62,8 +62,8 @@
                                             </div>
                                             <!--post-left-->
                                         </div>
-                                    </a>
-                                </router-link>
+                                    </router-link>
+                        
                                 <div class="postfo-right">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="tr">
                                         <path
@@ -80,18 +80,17 @@
                                     </p>
 
                                     <div class="tools" v-if="post.edit == 1">
-                                            <button class="del-btn" @click="postDelete(post.id)">
-                                                Delete
-                                            </button>
-                                        <a href="{{ route('post.edit', $post->id) }}">Edit
-                                        </a>
+                                        <button class="del-btn" @click="postDelete(post.id)">
+                                            Delete
+                                        </button>
+                                        <div class="">
+                                            <router-link :to='{ name: "edit", params: { id: post?.id } }'>Edit
+                                            </router-link>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-
-
                         </div>
-
                     </div>
                     <div class="category">
                         <div class="category-list">
@@ -144,13 +143,14 @@ const user = ref();
 
 const url = ref('http://127.0.0.1:8000/storage/');
 
-watchEffect(() => {
-    user.value = localStorage.getItem('user');
-    console.log(user.value);
+watchEffect(async() => {
+    user.value = localStorage.getItem('user'); 
+    const searchCategory= ref(getroute.query.category || '' );
 
     if (localStorage.getItem('auth')) {
         notAuth.value = false;
     }
+   
     axios.get('http://127.0.0.1:8000/api/posts', {
         params: {
             q: getroute.query.q
@@ -160,17 +160,19 @@ watchEffect(() => {
         posts.value = response.data.posts;
         latestPosts.value = response.data.latestPosts;
         categories.value = response.data.categories;
-    });
-});
+    }); 
 
-const searchCategory = async (category) => {
-    axios.get(`http://127.0.0.1:8000/api/${category}`).then((response) => {
+    await  axios.get(`http://127.0.0.1:8000/api/${searchCategory.value}`).then((response) => {
         console.log(response.data);
         posts.value = response.data.posts;
         search.value = response.data.search;
         latestPosts.value = response.data.latestPosts;
         categories.value = response.data.categories;
     });
+});
+
+const searchCategory = async (category) => {
+    router.push({ name: 'home', query: { category: category } });
 }
 
 const formatDate = (date) => {
@@ -197,10 +199,10 @@ const latestShort = (value) => {
     }
 }
 
-const postDelete=async(id)=>{
-await axios.delete(`http://127.0.0.1:8000/api/posts/${id}`).then((response)=>{
-    router.push('/home')
-})
+const postDelete = async (id) => {
+    await axios.delete(`http://127.0.0.1:8000/api/posts/${id}`).then((response) => {
+        router.push({ name: 'home', query: {deletedId: id }})
+    })
 }
 </script>
 <style scoped>
@@ -512,7 +514,7 @@ body {
 .latest-description {
     margin-top: 5px;
     font-size: 23px;
-    color: #776b6b;
+    color: #333333;
     font-weight: bold;
 }
 
@@ -1042,4 +1044,5 @@ body {
     .category-item a:nth-child(3n) {
         margin-right: 26.003px !important;
     }
-}</style>
+}
+</style>

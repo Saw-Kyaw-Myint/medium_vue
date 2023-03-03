@@ -8,20 +8,20 @@
 							<div class="clearfix">
 								<div class="left-header">
 									<div class="clearfix">
-										<a href="">
+										<router-link :to="{ name: 'profile', params: { id: post.user?.id } }">
 											<div class="profile-picture">
 												<img :src="url + post.user?.profile" alt="" width="20px" height="20px" />
 											</div>
 											<div class="name-date">
 												<p>{{ post?.user?.name }}</p>
-												<p class="date">{{  formatDate(post?.user?.created_at ) }}</p>
+												<p class="date">{{ formatDate(post?.user?.created_at) }}</p>
 											</div>
-										</a>
+										</router-link>
 									</div>
 								</div>
 								<div class="right-header">
 									<form action="" method="post">
-										<button class="del-btn">Delete</button>
+										<p class="del-btn" @click="postDelete">Delete</p>
 									</form>
 								</div>
 							</div>
@@ -50,13 +50,16 @@
 					<!--related post-->
 					<div class="related-category">
 						<h2>More from Medium</h2>
-							<div class="category-post clearfix" v-for="(relatePost, index) in relatedPosts" :key="index">
-								<router-link :to='{name:"detail",params:{id:relatePost?.id}}' >
-								<div class="left-side">
+						<div class="category-post clearfix" v-for="(relatePost, index) in relatedPosts" :key="index">
+
+							<div class="left-side">
+								<router-link :to="{name:'profile',params:{id:relatePost?.user.id}}">
 									<div class="left-side-header">
-										<img :src="url+relatePost.user?.profile" alt="" class="category-profile" />
+										<img :src="url + relatePost.user?.profile" alt="" class="category-profile" />
 										<p class="category-profile-name">{{ relatePost.user?.name }}</p>
 									</div>
+								</router-link>
+								<router-link :to='{ name: "detail", params: { id: relatePost?.id } }'>
 									<div class="rel-detail">
 										<p class="category-short-description">{{ relatePost.title }}</p>
 										<svg width="25" height="25" viewBox="0 0 25 25" fill="none" class="mb">
@@ -65,9 +68,10 @@
 												fill="#292929"></path>
 										</svg>
 									</div>
-								</div>
-							</router-link>
+								</router-link>
 							</div>
+
+						</div>
 					</div>
 				</div>
 			</div>
@@ -96,21 +100,22 @@
 </template>
 
 <script setup>
-import { ref, reactive,watch, onMounted, inject, watchEffect } from "vue";
+import { ref, reactive, watch, onMounted, inject, watchEffect } from "vue";
 import ReplyView from "./ReplyView.vue";
 import axios from "axios";
 import moment from 'moment';
-import { useRoute,useRouter,RouterLink } from "vue-router";
+import { useRoute, useRouter, RouterLink } from "vue-router";
 
 const route = useRoute();
+const router=useRouter();
 const post = ref({});
 const relatedPosts = ref();
 const comments = ref();
 const user_id = ref();
-const commentCount=ref('');
+const commentCount = ref('');
 const post_id = ref();
-const countPost=ref();
-const currentUser=ref(JSON.parse(localStorage.getItem('user')));
+const countPost = ref();
+const currentUser = ref(JSON.parse(localStorage.getItem('user')));
 
 const commentForm = reactive({
 	comment: '',
@@ -121,34 +126,40 @@ const commentForm = reactive({
 const url = ref('http://127.0.0.1:8000/storage/');
 
 watchEffect(async () => {
-	user_id.value=currentUser.value.id;
+	user_id.value = currentUser.value.id;
 	await axios
 		.get(`http://127.0.0.1:8000/api/posts/${route.params.id}`)
 		.then((response) => {
 			post.value = response.data.post;
 			relatedPosts.value = response.data.relatedPosts;
-			commentCount.value=response.data.commentsTotal;
-			countPost.value=response.data.countPosts;
+			commentCount.value = response.data.commentsTotal;
+			countPost.value = response.data.countPosts;
 			post_id.value = post.value.id
 		});
 	commentList();
 });
 
-const detailPost=async()=>{
-	
-}
+
 
 
 function formatDate(date) {
-    return moment(date).format('MMMM Do');
+	return moment(date).format('MMMM Do');
 }
 
 const commentList = async () => {
 	await axios.get(`http://127.0.0.1:8000/api/comment/${route.params.id}`).then((response) => {
 		comments.value = response.data;
 	})
-  
+
 }
+
+const postDelete = async () => {
+    await axios.delete(`http://127.0.0.1:8000/api/posts/${route.params.id}`).then((response) => {
+		console.log(response.data);
+        router.push({ name: 'home' })
+    })
+}
+
 const createComment = async () => {
 	await axios.post('http://127.0.0.1:8000/api/comment', commentForm).then((response) => {
 		commentForm.comment = '';
@@ -202,7 +213,7 @@ body {
 	padding: 5px 0;
 	background-color: #8180f9;
 	color: white;
-    border: none;
+	border: none;
 	text-align: center;
 	text-transform: capitalize;
 	border-radius: 10px;
@@ -268,10 +279,11 @@ body {
 	width: 80px;
 }
 
-.right-header button {
+.right-header p {
 	display: inline-block;
 	padding: 10px 15px;
 	border: none;
+	cursor: pointer;
 	background-color: rgb(255, 0, 0);
 	color: #fff;
 	border-radius: 20px;

@@ -99,7 +99,7 @@ const register = async () => {
       error.value = res.data.message;
     }
   }).catch(function (error) {
-   errors.value=error.response.data.errors;
+   errors.value=error.response.data.errors;ei
     });
 }
 
