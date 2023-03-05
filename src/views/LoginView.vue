@@ -1,11 +1,7 @@
 <template>
     <div class="container">
-
-
         <div class="login-form">
-           
                 <p class="error-message" v-if="error">{{ error }}</p>
-       
             <h2>Login</h2>
 
             <form @submit.prevent="login"> 
