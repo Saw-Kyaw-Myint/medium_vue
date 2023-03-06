@@ -18,3 +18,4 @@ app.component('SummernoteEditor', SummernoteEditor);
 app.mount('#app')
 
 import 'vue-select/dist/vue-select.css'
+

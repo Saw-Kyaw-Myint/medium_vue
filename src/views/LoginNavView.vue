@@ -122,6 +122,7 @@ const url = ref('http://127.0.0.1:8000/storage/');
 watchEffect(() => {
     user.value = JSON.parse(localStorage.getItem('user'));
 });
+
 //function
 const slideBoard = () => {
     customBoard.value = !(customBoard.value);
@@ -137,6 +138,7 @@ const postSearch = () => {
 const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('auth');
+    localStorage.removeItem('user');
 
     router.push({ name: 'login' });
 }

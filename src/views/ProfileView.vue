@@ -1,94 +1,69 @@
 <template>
-  <div
-    id="overlay"
-    v-if="updateProfile || changePassword"
-    @click="(updateProfile = false), (changePassword = false)"
-  ></div>
+  <div id="overlay" v-if="updateProfile || changePassword" @click="(updateProfile = false), (changePassword = false)">
+  </div>
   <!-- edit profile  -->
   <div id="edit-profile" class=" " v-if="updateProfile">
-    {{ changeProfile }}
-    <form
-     @submit.prevent="updateUserDetail"
-    >
-      <p class="x" @click="updateProfile = false">
-        <i class="fa-solid fa-x"></i>
-      </p>
-
+    <p class="x" @click="updateProfile = false">
+      <i class="fa-solid fa-x"></i>
+    </p>
+    <form @submit.prevent="updateUserDetail">
       <h3 class="edit-ttl">Edit Your Information</h3>
       <div class="profile-image">
-        <img
-          :src="previewImage"
-          v-if="previewImage"
-          id="output"
-        />
-        <img :src="url+ loginUser?.profile" v-else id="output" /><br />
-        <input
-          type="file"
-          name="profile"
-          @change="handleImageChange"
-        /><br />
+        <img :src="previewImage" v-if="previewImage" id="output" />
+        <img :src="url + loginUser?.profile" v-else id="output" /><br />
+        <input type="file" name="profile" @change="handleImageChange" /><br />
       </div>
+
+      <label for="">Name</label>
       <input type="text" name="name" v-model="changeProfile.name" /><br />
 
-      <div class="error"></div>
+      <p class="error">{{ errors?.name }}</p>
 
-      <input
-        type="email"
-        name="email"
-        v-model="changeProfile.email"
-      /><br />
+      <label for="">Email</label>
+      <input type="text" name="email" v-model="changeProfile.email" /><br />
 
-      <div class="error"></div>
+      <p class="error">{{ errors?.email }}</p>
 
+      <label for="">Bio</label>
       <input type="text" name="bio" v-model="changeProfile.bio" /><br />
 
-      <div class="error"></div>
+      <div class="error">{{ errors?.bio }}</div>
 
       <div>
         <button class="cancel" type="reset">Cancel</button>
         <button class="button-primary" type="submit">Update</button>
       </div>
+
     </form>
+    <!-- <edit_profile></edit_profile> -->
   </div>
 
   <!-- password change  -->
   <div id="password-change" class="" v-if="changePassword">
+    <p class="x" @click="changePassword = false"><i class="fa-solid fa-x"></i></p>
     <h2 class="cps-title">ChangePassword Form</h2>
-    <form action="{{ route('update.password') }}" method="POST">
-      <span class="x"><i class="fa-solid fa-x"></i></span>
-
+    <form @submit.prevent="passwordUpdate">
+    {{ updatePassword }}
       <div class="cps-input-group">
-        <input
-          type="password"
-          name="current_password"
-          id="current_password"
-          placeholder="Enter current password..."
-          value="{{ old('current_password') }}"
-        />
+        <label for="">Current Password</label>
+        <input type="password" name="current_password" id="current_password" placeholder="Enter current password..."
+           v-model="updatePassword.current_password" />
 
-        <span class="error-message"></span>
+        <span class="error-message">{{ passwordErrors?.current_password }}</span>
       </div>
       <div class="cps-input-group">
-        <input
-          type="password"
-          name="new_password"
-          id="new_password"
-          placeholder="Enter new password..."
-          value="{{ old('new_password') }}"
-        />
+        <label for="">New Password</label>
+        <input type="password" name="new_password" id="new_password" placeholder="Enter new password..."
+         v-model="updatePassword.new_password" />
 
-        <span class="error-message"></span>
+        <span class="error-message">{{ passwordErrors?.new_password }}</span>
       </div>
       <div class="cps-input-group">
-        <input
-          type="password"
-          name="confirm_password"
-          id="confirm_password"
-          placeholder="Enter confirm password..."
-          value="{{ old('confirm_password') }}"
-        />
+        <label for="">Confirm Passwor</label>
+        <input type="password" name="confirm_password" id="confirm_password" placeholder="Enter confirm password..."
+          v-model="updatePassword.confirm_password"/>
 
-        <span class="error-message"></span>
+        <span class="error-message">{{ passwordErrors?.confirm_password }}</span>
       </div>
       <div class="input-gp change-blk">
         <input type="submit" value="Change Password" class="change-btn" />
@@ -103,11 +78,7 @@
           <div class="left-profile-header">
             <div class="clearfix">
               <div class="pf-left-side">
-                <img
-                  :src="url + currentUser?.profile"
-                  alt=""
-                  class="pfl-profile"
-                />
+                <img :src="url + currentUser?.profile" alt="" class="pfl-profile" />
                 <h2>{{ currentUser?.name }}</h2>
               </div>
               <div class="pf-right-side">
@@ -130,7 +101,7 @@
             </div>
             <div class="pls-post-count">
               <h3>Post Count</h3>
-              <p>{{ posts.length }}</p>
+              <p>{{ (posts) }}</p>
             </div>
             <div class="pls-Bio">
               <h3>Bio</h3>
@@ -139,19 +110,12 @@
             <h2>My Posts</h2>
 
             <!-- mypost  -->
-            <div
-              class="mypost-whole"
-              v-for="(post, index) in posts"
-              :key="index"
-            >
-              <router-link
-                :to="{ name: 'profile', parms: { id: post?.user?.id } }"
-              >
+            <div class="mypost-whole" v-for="(post, index) in posts" :key="index">
+              <router-link :to="{ name: 'profile', parms: { id: post?.user?.id } }">
                 <div class="pls-myPost">
                   <p>
                     <img :src="url + post?.user?.profile" alt="" />
-                    <span
-                      >{{ post?.user?.name }}
+                    <span>{{ post?.user?.name }}
                       <span>{{ post?.created_at }}</span>
                     </span>
                   </p>
@@ -166,11 +130,7 @@
                         <h3>{{ post?.title }}</h3>
                         <p>{{ post?.description }}</p>
                         <div class="prof-leftPost-footer">
-                          <div
-                            class="cat-group"
-                            v-for="(category, index) in post.categories"
-                            :key="index"
-                          >
+                          <div class="cat-group" v-for="(category, index) in post.categories" :key="index">
                             <span href="#">{{ category.ctitle }}</span>
                           </div>
                         </div>
@@ -184,27 +144,16 @@
               </router-link>
 
               <div class="postfo-right">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  class="tr"
-                >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="tr">
                   <path
                     d="M17.5 1.25a.5.5 0 0 1 1 0v2.5H21a.5.5 0 0 1 0 1h-2.5v2.5a.5.5 0 0 1-1 0v-2.5H15a.5.5 0 0 1 0-1h2.5v-2.5zm-11 4.5a1 1 0 0 1 1-1H11a.5.5 0 0 0 0-1H7.5a2 2 0 0 0-2 2v14a.5.5 0 0 0 .8.4l5.7-4.4 5.7 4.4a.5.5 0 0 0 .8-.4v-8.5a.5.5 0 0 0-1 0v7.48l-5.2-4a.5.5 0 0 0-.6 0l-5.2 4V5.75z"
-                    fill="#000"
-                  ></path>
+                    fill="#000"></path>
                 </svg>
 
                 <p class="see-tools" @click="post.edit = !post.edit">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM8.25 12h7.5"
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    ></path>
+                    <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM8.25 12h7.5" stroke="currentColor"
+                      stroke-linecap="round" stroke-linejoin="round"></path>
                   </svg>
                 </p>
 
@@ -213,9 +162,7 @@
                     Delete
                   </button>
                   <div class="">
-                    <router-link
-                      :to="{ name: 'edit', params: { id: post?.id } }"
-                      >Edit
+                    <router-link :to="{ name: 'edit', params: { id: post?.id } }">Edit
                     </router-link>
                   </div>
                 </div>
@@ -227,26 +174,18 @@
           <div class="profile-right-side">
             <div class="category-list">
               <h2 class="cate-name">2022 IN Latest Post</h2>
-              <div
-                class="latest-post-whole"
-                v-for="(latestpost, index) in latestPosts"
-                :key="index"
-              >
+              <div class="latest-post-whole" v-for="(latestpost, index) in latestPosts" :key="index">
                 <div class="latest-post">
-                  <router-link
-                    :to="{
-                      name: 'profile',
-                      params: { id: latestpost.user?.id },
-                    }"
-                  >
+                  <router-link :to="{
+                    name: 'profile',
+                    params: { id: latestpost.user?.id },
+                  }">
                     <div class="list-latest-profile">
                       <img :src="url + latestpost.user?.profile" />
                       <p class="name">{{ latestpost?.user?.name }}</p>
                     </div>
                   </router-link>
-                  <router-link
-                    :to="{ name: 'detail', params: { id: latestpost.id } }"
-                  >
+                  <router-link :to="{ name: 'detail', params: { id: latestpost.id } }">
                     <p class="latest-description">{{ latestpost?.title }}</p>
                   </router-link>
                 </div>
@@ -280,17 +219,27 @@ const posts = ref(null);
 const updateProfile = ref(false);
 const changePassword = ref(false);
 const imageFile = ref(null);
-const loginUser=ref(JSON.parse(localStorage.getItem('user')));
+const loginUser = ref(null);
 const previewImage = ref(null);
+const updateCount = ref(0);
+const changeTime=ref(0);
+const errors = ref(null);
+const passwordErrors=ref(null);
 const url = ref("http://127.0.0.1:8000/storage/");
 
 //change profiel 
-const  changeProfile=reactive({
-  image:'',
-  name:'',
-  email:'',
-  user_id:'',
-  bio:''
+const changeProfile = reactive({
+  image: '',
+  name: '',
+  email: '',
+  user_id: '',
+  bio: ''
+})
+const updatePassword=reactive({
+ current_password:'',
+ new_password:'',
+ confirm_password:'',
+ user_id:'',
 })
 
 const handleImageChange = (event) => {
@@ -311,18 +260,34 @@ watchEffect(async () => {
     .get(`http://127.0.0.1:8000/api/profile/${route.params.id}`)
     .then((response) => {
       currentUser.value = response.data.user;
+      updatePassword.user_id=response.data.user.id;
       categories.value = response.data.categories;
       latestPosts.value = response.data.latestPosts;
       posts.value = response.data.posts;
     });
+
+  const token = localStorage.getItem('token');
+  axios.get('http://127.0.0.1:8000/api/user', {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }).then((response) => {
+    loginUser.value = response.data;
+
+    changeProfile.name = loginUser.value.name;
+    changeProfile.email = loginUser.value.email;
+    changeProfile.bio = loginUser.value.bio
+    changeProfile.user_id = loginUser.value.id;
+    localStorage.setItem('user', JSON.stringify(response.data));
+  });
+
+  // loginUser.value = JSON.parse(localStorage.getItem('user'));
+
 });
 
-onMounted(()=>{
+onMounted(() => {
   //console.log(JSON.parse(localStorage.getItem('token')));
-  changeProfile.name=loginUser.value.name;
-   changeProfile.email=loginUser.value.email;
-   changeProfile.bio=loginUser.value.bio
-   changeProfile.user_id=loginUser.value.id;
+
 })
 
 const categorySearch = async (searchVal) => {
@@ -337,15 +302,44 @@ const postDelete = async (id) => {
     });
 };
 
-const updateUserDetail= async()=>{
- const token = localStorage.getItem('token');
-            axios.post('http://127.0.0.1:8000/api/userProfile',changeProfile, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }).then((response) => {
-              console.log(response.data)
-            })
+const updateUserDetail = async () => {
+  const token = localStorage.getItem('token');
+  const config = {
+    headers: {
+      "content-type": "multipart/form-data",
+    },
+  }
+  axios.post('http://127.0.0.1:8000/api/userProfile', changeProfile, config, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }).then((response) => {
+    updateCount.value++;
+    router.push({ name: 'profile', query: { update: updateCount.value } });
+    updateProfile.value = false;
+  }).catch(function (error) {
+    errors.value = error.response.data.errors;
+  })
+}
+
+const passwordUpdate= async()=>{
+  const token = localStorage.getItem('token');
+  axios.post('http://127.0.0.1:8000/api/changePassword/update', updatePassword, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }).then((response) => {
+    console.log(response.data);
+    router.push({ name: 'profile'});
+    updatePassword.current_password='';
+    updatePassword.new_password='';
+    updatePassword.confirm_password='';
+    passwordErrors.value=null;
+    alert('password is updated successfully');
+    changePassword.value = false;
+  }).catch(function (error) {
+    passwordErrors.value = error.response.data.errors;
+  })
 }
 </script>
 
@@ -377,6 +371,32 @@ const updateUserDetail= async()=>{
 
 .see-tools {
   cursor: pointer;
+}
+
+.cancel {
+  background-color: #be2284;
+  padding: 5px 10px;
+  border-radius: 5px;
+  color: white;
+}
+
+button {
+  border: none;
+  outline: none;
+}
+
+label {
+  font-size: 19px;
+  display: inline-block;
+  margin: 4px 0px;
+}
+
+.button-primary {
+  padding: 5px 10px;
+  background: #2235d4;
+  border-radius: 5px;
+  color: white;
+  margin-left: 5px;
 }
 
 .latest-post-whole {
@@ -748,7 +768,7 @@ const updateUserDetail= async()=>{
 .error {
   color: red;
   margin-bottom: 5px;
-  font-size: 13px;
+  font-size: 18px;
 }
 
 .edit-ttl {
@@ -766,20 +786,22 @@ const updateUserDetail= async()=>{
   box-shadow: rgb(100 100 111 / 20%) 0px 7px 29px 0px;
   border-radius: 20px;
 }
-#edit-profile input{
+
+#edit-profile input {
   width: 100%;
- padding:5px 2px;
- outline: none;
- margin-bottom: 5px;
+  padding: 5px 2px;
+  outline: none;
+  margin-bottom: 5px;
 }
+
 #password-change {
-  margin-left: 37%;
-  width: 300px;
+  margin-left: 38.5%;
+  width: 325px;
   transition: 0.5s;
   z-index: 4;
   position: absolute;
   background: #fff;
-  margin-top: 60px;
+  margin-top: 140px;
   padding: 10px;
   box-shadow: rgb(100 100 111 / 20%) 0px 7px 29px 0px;
   border-radius: 20px;

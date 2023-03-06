@@ -14,56 +14,56 @@
                 <div class="clearfix">
                     <div class="post-list">
                         <h2 class="search-result">{{ search }}</h2>
-                        <div v-for="(post, index) in posts" :key="index">
+                        <div v-for="(post, index) in posts.data" :key="index">
                             <div class="post">
-                             
-                                    <div class="people">
-                                       <router-link :to="{name:'profile',params:{id:post.user.id}}">
-                                            <div class="clearfix">
-                                                <div class="profile-img">
-                                                    <img :src="url + post.user?.profile" class="create-user-img"
-                                                        onerror="this.onerror=null;this.src='';">
-                                                </div>
-                                                <p class="name">{{ post.user.name }}</p>
-                                            </div>
-                                        </router-link>
-                                    </div>
-                                    <router-link :to="{name:'detail',params:{id:post.id}}">
+
+                                <div class="people">
+                                    <router-link :to="{ name: 'profile', params: { id: post?.user?.id } }">
                                         <div class="clearfix">
-                                            <div class="post-text">
-
-                                                <!--post-user-->
-
-                                                <div>
-                                                    <h2 class="post-title">{{ post.title }}</h2>
-                                                    <p class="post-description">
-                                                        {{ short(post.description) }}</p>
-                                                    <div class="post-footer">
-                                                        <div class="postfo-left">
-
-                                                            <a v-for="(category, index) in post.categories" :key="index"
-                                                                @click="searchCategory(category.ctitle)">
-                                                                <span>{{ category.ctitle }}</span>
-                                                           </a>
-
-                                                        </div>
-                                                        <p class="post-date">
-                                                            <!-- {{ formatDate(post.created_at) }}  -->
-                                                            <span>{{
-                                                                minuteAgo(post.created_at) }}</span>
-                                                        </p>
-
-                                                    </div>
-                                                </div>
+                                            <div class="profile-img">
+                                                <img :src="url + post.user?.profile" class="create-user-img"
+                                                    onerror="this.onerror=null;this.src='';">
                                             </div>
-                                            <div class="post-img">
-                                                <img :src="url + post.image" alt="" width="100%" height="100%"
-                                                    onerror="this.onerror=null;this.src='../assets/template/people.jfif';">
-                                            </div>
-                                            <!--post-left-->
+                                            <p class="name">{{ post.user.name }}</p>
                                         </div>
                                     </router-link>
-                        
+                                </div>
+                                <router-link :to="{ name: 'detail', params: { id: post.id } }">
+                                    <div class="clearfix">
+                                        <div class="post-text">
+
+                                            <!--post-user-->
+
+                                            <div>
+                                                <h2 class="post-title">{{ post?.title }}</h2>
+                                                <p class="post-description">
+                                                    {{ short(post?.description) }}</p>
+                                                <div class="post-footer">
+                                                    <div class="postfo-left">
+
+                                                        <a v-for="(category, index) in post.categories" :key="index"
+                                                            @click="searchCategory(category.ctitle)">
+                                                            <span>{{ category.ctitle }}</span>
+                                                        </a>
+
+                                                    </div>
+                                                    <p class="post-date">
+                                                        <!-- {{ formatDate(post.created_at) }}  -->
+                                                        <span>{{
+                                                            minuteAgo(post?.created_at) }}</span>
+                                                    </p>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="post-img">
+                                            <img :src="url + post.image" alt="" width="100%" height="100%"
+                                                onerror="this.onerror=null;this.src='../assets/template/people.jfif';">
+                                        </div>
+                                        <!--post-left-->
+                                    </div>
+                                </router-link>
+
                                 <div class="postfo-right">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="tr">
                                         <path
@@ -79,7 +79,7 @@
                                         </svg>
                                     </p>
 
-                                    <div class="tools" v-if="post.edit == 1">
+                                    <div class="tools" v-if="post?.edit == 1">
                                         <button class="del-btn" @click="postDelete(post.id)">
                                             Delete
                                         </button>
@@ -91,6 +91,7 @@
                                 </div>
                             </div>
                         </div>
+                        <Bootstrap5Pagination :data="posts" @pagination-change-page="(newPage) => currentPage = newPage" />
                     </div>
                     <div class="category">
                         <div class="category-list">
@@ -126,13 +127,18 @@
     </div>
 </template>
 <script setup>
+import 'bootstrap/dist/js/bootstrap.js'
 import { ref, onMounted, watchEffect } from 'vue';
+
+import { Bootstrap5Pagination } from 'laravel-vue-pagination';
+
 import { useRouter, RouterLink, useRoute } from 'vue-router';
 import moment from 'moment';
 import axios from 'axios';
 
 
 const router = useRouter();
+const currentPage=ref(1);
 const getroute = useRoute();
 const posts = ref([]);
 const latestPosts = ref([]);
@@ -140,18 +146,20 @@ const categories = ref([]);
 const search = ref('');
 const notAuth = ref(true);
 const user = ref();
+const laravelData = ref({});
 
 const url = ref('http://127.0.0.1:8000/storage/');
 
-watchEffect(async() => {
-    user.value = localStorage.getItem('user'); 
-    const searchCategory= ref(getroute.query.category || '' );
+watchEffect(async () => {
+    user.value = localStorage.getItem('user');
+    const searchCategory = ref(getroute.query.category || '');
 
     if (localStorage.getItem('auth')) {
         notAuth.value = false;
     }
-   
-    axios.get('http://127.0.0.1:8000/api/posts', {
+
+
+    axios.get(`http://127.0.0.1:8000/api/posts?page=${currentPage.value}`, {
         params: {
             q: getroute.query.q
         }
@@ -160,9 +168,21 @@ watchEffect(async() => {
         posts.value = response.data.posts;
         latestPosts.value = response.data.latestPosts;
         categories.value = response.data.categories;
-    }); 
+    });
 
-    await  axios.get(`http://127.0.0.1:8000/api/${searchCategory.value}`).then((response) => {
+    // axios.get(`http://127.0.0.1:8000/api/posts`, {
+    //     params: {
+    //         q: getroute.query.q
+    //     }
+    // }).then((response) => {
+    //     search.value = response.data.search;
+    //     posts.value = response.data.posts;
+    //     latestPosts.value = response.data.latestPosts;
+    //     categories.value = response.data.categories;
+    // });
+
+
+    await axios.get(`http://127.0.0.1:8000/api/${searchCategory.value}`).then((response) => {
         console.log(response.data);
         posts.value = response.data.posts;
         search.value = response.data.search;
@@ -170,6 +190,10 @@ watchEffect(async() => {
         categories.value = response.data.categories;
     });
 });
+
+// onMounted(() => {
+//     getResults();
+// })
 
 const searchCategory = async (category) => {
     router.push({ name: 'home', query: { category: category } });
@@ -201,11 +225,19 @@ const latestShort = (value) => {
 
 const postDelete = async (id) => {
     await axios.delete(`http://127.0.0.1:8000/api/posts/${id}`).then((response) => {
-        router.push({ name: 'home', query: {deletedId: id }})
+        router.push({ name: 'home', query: { deletedId: id } })
     })
 }
+
+// const getResults = async (page =1) => {
+//      await axios.get(`http://127.0.0.1:8000/api/posts?page=${page}`).then((response)=>{
+//         posts.value = response.data;
+//      })
+// }
+
 </script>
 <style scoped>
+@import 'bootstrap/dist/css/bootstrap.css';
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed&family=Sofia+Sans+Condensed&display=swap');
 
 .create-user-img {
