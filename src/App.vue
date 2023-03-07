@@ -2,16 +2,22 @@
 import { RouterLink, RouterView } from 'vue-router'
 import Navbar from './views/NavbarView.vue'
 import LoginNav from './views/LoginNavView.vue'
-import { ref,watch, onMounted,watchEffect, reactive } from 'vue';
+import { ref,watch, onMounted ,watchEffect, reactive } from 'vue';
 import axios from "axios";
 
 let Authuser=ref();
 const Auth=reactive({
-  data:localStorage.getItem('auth') || false
+  data:localStorage.getItem('user') ? true : false
 })
 onMounted(()=>{
-  console.log(Auth.data)
+  console.log("hello")
 })
+
+
+
+
+
+
 
 
 </script>

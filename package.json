@@ -13,11 +13,13 @@
     "jquery": "^3.6.3",
     "laravel-vue-pagination": "^4.0.0",
     "moment": "^2.29.4",
+    "sweetalert2": "^11.7.3",
     "vue": "^3.2.47",
     "vue-router": "^4.1.6",
     "vue-select": "^4.0.0-beta.6",
     "vue-select-3": "^1.0.1",
     "vue-summernote": "^1.0.3",
+    "vue-sweetalert2": "^5.0.5",
     "vue3-summernote-editor": "^1.0.2"
   },
   "devDependencies": {

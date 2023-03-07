@@ -48,6 +48,7 @@
 <script setup >
 import axios from 'axios';
 import { ref, onMounted, reactive } from 'vue';
+import Swal from 'sweetalert2'
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -91,6 +92,22 @@ const storePost = async () => {
         },
     };
     await axios.post('http://127.0.0.1:8000/api/posts', postForm, config).then((response) => {
+        const Toast = Swal.mixin({
+                toast: true,
+                position: 'top',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+
+            Toast.fire({
+                icon: 'success',
+                title: 'Post is created is successfully'
+            })
         router.push({ name: 'home' });
     }).catch(function (error) {
    errors.value=error.response.data.errors;

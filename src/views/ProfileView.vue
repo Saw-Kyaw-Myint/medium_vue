@@ -2,6 +2,7 @@
   <div id="overlay" v-if="updateProfile || changePassword" @click="(updateProfile = false), (changePassword = false)">
   </div>
   <!-- edit profile  -->
+
   <div id="edit-profile" class=" " v-if="updateProfile">
     <p class="x" @click="updateProfile = false">
       <i class="fa-solid fa-x"></i>
@@ -81,7 +82,8 @@
                 <img :src="url + currentUser?.profile" alt="" class="pfl-profile" />
                 <h2>{{ currentUser?.name }}</h2>
               </div>
-              <div class="pf-right-side">
+              
+              <div class="pf-right-side" v-if="loginUser!=null && loginUser.id==route.params.id">
                 <div class="edit-update">
                   <p id="ex1" @click="updateProfile = !updateProfile">
                     <a href="#">Edit Profile</a>
@@ -91,6 +93,7 @@
                   </p>
                 </div>
               </div>
+
             </div>
           </div>
           <div class="pls-content">
@@ -101,7 +104,7 @@
             </div>
             <div class="pls-post-count">
               <h3>Post Count</h3>
-              <p>{{ (posts) }}</p>
+              <p>{{ (posts.length) }}</p>
             </div>
             <div class="pls-Bio">
               <h3>Bio</h3>
@@ -150,7 +153,8 @@
                     fill="#000"></path>
                 </svg>
 
-                <p class="see-tools" @click="post.edit = !post.edit">
+
+                <p class="see-tools" @click="post.edit = !post.edit" v-if="loginUser!=null && loginUser.id==post.user.id">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM8.25 12h7.5" stroke="currentColor"
                       stroke-linecap="round" stroke-linejoin="round"></path>
@@ -281,7 +285,7 @@ watchEffect(async () => {
     localStorage.setItem('user', JSON.stringify(response.data));
   });
 
-  // loginUser.value = JSON.parse(localStorage.getItem('user'));
+console.log(loginUser.value);
 
 });
 

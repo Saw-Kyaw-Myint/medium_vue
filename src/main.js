@@ -1,15 +1,16 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
-import $ from 'jquery'
 import SummernoteEditor from 'vue3-summernote-editor';
 import vSelect from "vue-select";
 
 
 import './assets/main.css'
+// sweetalert 
 
 
 const app = createApp(App)
+
 
 
 app.use(router)

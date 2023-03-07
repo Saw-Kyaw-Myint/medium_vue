@@ -71,7 +71,8 @@
                                             fill="#000"></path>
                                     </svg>
 
-                                    <p class="see-tools" onclick="editDelete({{ $post->id }})"
+
+                                    <p class="see-tools" onclick="editDelete({{ $post->id }})" v-if="notAuth==false && user.id==post.user.id"
                                         @click="post.edit = !post.edit">
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                                             <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM8.25 12h7.5"
@@ -88,6 +89,7 @@
                                             </router-link>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
@@ -101,7 +103,7 @@
                                     <div class="latest-post-whole">
                                         <div class="latest-post">
                                             <div class="list-latest-profile">
-                                                <a href="{{ route('user.profile',$lpost->user->id) }}">
+                                                <a href="#">
                                                     <img :src="url + lpost.user.profile" alt="" width="100%" height="100%"
                                                         onerror="this.onerror=null;this.src='{{ asset('template/people.jfif') }}';">
                                                     <p class="name">{{ lpost.user.name }}</p>
@@ -129,7 +131,7 @@
 <script setup>
 import 'bootstrap/dist/js/bootstrap.js'
 import { ref, onMounted, watchEffect } from 'vue';
-
+import Swal from 'sweetalert2'
 import { Bootstrap5Pagination } from 'laravel-vue-pagination';
 
 import { useRouter, RouterLink, useRoute } from 'vue-router';
@@ -138,27 +140,25 @@ import axios from 'axios';
 
 
 const router = useRouter();
-const currentPage=ref(1);
+const currentPage = ref(1);
 const getroute = useRoute();
 const posts = ref([]);
 const latestPosts = ref([]);
 const categories = ref([]);
 const search = ref('');
-const notAuth = ref(true);
-const user = ref();
+const notAuth = ref(null);
+const user = ref(null);
 const laravelData = ref({});
 
 const url = ref('http://127.0.0.1:8000/storage/');
 
 watchEffect(async () => {
-    user.value = localStorage.getItem('user');
+    notAuth.value = localStorage.getItem('user') ? false : true;
+    user.value =JSON.parse(localStorage.getItem('user'));
+
+  
+
     const searchCategory = ref(getroute.query.category || '');
-
-    if (localStorage.getItem('auth')) {
-        notAuth.value = false;
-    }
-
-
     axios.get(`http://127.0.0.1:8000/api/posts?page=${currentPage.value}`, {
         params: {
             q: getroute.query.q
@@ -170,18 +170,6 @@ watchEffect(async () => {
         categories.value = response.data.categories;
     });
 
-    // axios.get(`http://127.0.0.1:8000/api/posts`, {
-    //     params: {
-    //         q: getroute.query.q
-    //     }
-    // }).then((response) => {
-    //     search.value = response.data.search;
-    //     posts.value = response.data.posts;
-    //     latestPosts.value = response.data.latestPosts;
-    //     categories.value = response.data.categories;
-    // });
-
-
     await axios.get(`http://127.0.0.1:8000/api/${searchCategory.value}`).then((response) => {
         console.log(response.data);
         posts.value = response.data.posts;
@@ -191,9 +179,6 @@ watchEffect(async () => {
     });
 });
 
-// onMounted(() => {
-//     getResults();
-// })
 
 const searchCategory = async (category) => {
     router.push({ name: 'home', query: { category: category } });
@@ -225,22 +210,33 @@ const latestShort = (value) => {
 
 const postDelete = async (id) => {
     await axios.delete(`http://127.0.0.1:8000/api/posts/${id}`).then((response) => {
+        const Toast = Swal.mixin({
+  toast: true,
+  position: 'top',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener('mouseenter', Swal.stopTimer)
+    toast.addEventListener('mouseleave', Swal.resumeTimer)
+  }
+})
+
+Toast.fire({
+  icon: 'success',
+  title: 'deleted post is  successfully'
+})
         router.push({ name: 'home', query: { deletedId: id } })
     })
 }
 
-// const getResults = async (page =1) => {
-//      await axios.get(`http://127.0.0.1:8000/api/posts?page=${page}`).then((response)=>{
-//         posts.value = response.data;
-//      })
-// }
 
 </script>
 <style scoped>
 @import 'bootstrap/dist/css/bootstrap.css';
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed&family=Sofia+Sans+Condensed&display=swap');
 
-/* paginnation  */
+
 
 .create-user-img {
     width: 35px;
@@ -259,11 +255,11 @@ body {
 
 .see-tools {
     cursor: pointer;
+    margin: 0;
 }
 
 .vender {
     margin-bottom: 30px;
-
     padding: 90px 0;
     margin-top: 40px;
     background: #f8ba16;
@@ -296,7 +292,6 @@ body {
     text-decoration: underline;
     text-transform: capitalize;
 }
-
 
 .del-btn {
     margin-bottom: 9px;
@@ -541,6 +536,7 @@ body {
 
 .latest-post .name {
     font-size: 14px;
+    margin: 0;
     color: #484848;
     font-weight: bold;
 }

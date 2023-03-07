@@ -19,7 +19,8 @@
 										</router-link>
 									</div>
 								</div>
-								<div class="right-header">
+								
+								<div class="right-header" v-if="currentUser?.id==post.user?.id">
 									<form action="" method="post">
 										<p class="del-btn" @click="postDelete">Delete</p>
 									</form>
@@ -88,7 +89,7 @@
 						placeholder="{{ __('message.comment_placeholder') }}" class="comment-description"
 						required></textarea>
 					<input type="hidden" name="post_id" v-model="commentForm.post_id" />
-					<input type="submit" class="comment-btn" value="comment" />
+					<button type="submit" class="comment-btn" >create</button>
 				</form>
 
 				<ReplyView :comments="comments" :postId="post.id" :userId="user_id" @listComment="commentList()">
@@ -126,7 +127,9 @@ const commentForm = reactive({
 const url = ref('http://127.0.0.1:8000/storage/');
 
 watchEffect(async () => {
-	user_id.value = currentUser.value.id;
+
+	
+
 	await axios
 		.get(`http://127.0.0.1:8000/api/posts/${route.params.id}`)
 		.then((response) => {
@@ -138,8 +141,6 @@ watchEffect(async () => {
 		});
 	commentList();
 });
-
-
 
 
 function formatDate(date) {
@@ -161,7 +162,14 @@ const postDelete = async () => {
 }
 
 const createComment = async () => {
+	if(currentUser.value==null){
+		router.push({name:'login'});
+	}
+	
+	user_id.value = currentUser.value.id;
+
 	await axios.post('http://127.0.0.1:8000/api/comment', commentForm).then((response) => {
+		
 		commentForm.comment = '';
 		commentList();
 	})
@@ -187,7 +195,7 @@ body {
 }
 
 .detail-whole {
-	margin-top: 100px;
+	margin-top: 100px !important;
 }
 
 .detail-post {
@@ -364,12 +372,12 @@ body {
 
 .comment-btn {
 	display: inline-block;
-	margin: 10px 10px 10px 92%;
-	padding: 11px;
-	border: none;
-	background-color: rgb(139 139 139);
-	color: #fff;
-	border-radius: 10px;
+    margin: 10px 10px 10px 92%;
+    padding: 12px 23px;
+    border: none;
+    background-color: rgb(139 139 139);
+    color: #fff;
+    border-radius: 10px;
 }
 
 #edit-comtext {

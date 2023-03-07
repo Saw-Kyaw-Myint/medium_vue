@@ -1,10 +1,10 @@
 <template>
     <div class="container">
         <div class="login-form">
-                <p class="error-message" v-if="error">{{ error }}</p>
+            <p class="error-message" v-if="error">{{ error }}</p>
             <h2>Login</h2>
 
-            <form @submit.prevent="login"> 
+            <form @submit.prevent="login">
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input type="text" id="email" name="email" v-model="form.email"
@@ -23,7 +23,9 @@
 </template>
 <script setup>
 
-import { ref, reactive,watchEffect, watch } from 'vue'
+import Swal from 'sweetalert2'
+import { ref, reactive, watchEffect, watch } from 'vue'
+import Swal from 'sweetalert2'
 import axios from 'axios'
 import { useRouter } from "vue-router";
 const router = useRouter();
@@ -36,24 +38,40 @@ let form = reactive(
 
 let error = ref('');
 let errors = ref({});
+const Auth = ref('');
 
 const login = async () => {
     await axios.post('http://127.0.0.1:8000/api/login', form).then(res => {
         if (res.data.success) {
+
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+
+            Toast.fire({
+                icon: 'success',
+                title: 'login is successfully'
+            })
+
             localStorage.setItem('token', res.data.token)
-            alert('succes ');
-            
             const token = localStorage.getItem('token');
             axios.get('http://127.0.0.1:8000/api/user', {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             }).then((response) => {
-               localStorage.setItem('user', JSON.stringify(response.data));
+                localStorage.setItem('user', JSON.stringify(response.data));
                 localStorage.setItem('auth', true);
                 router.push({ name: 'home' })
             });
-          
         } else {
             error.value = res.data.message;
         }
@@ -64,10 +82,14 @@ const login = async () => {
 
 
 watchEffect(() => {
-  if (localStorage.hasOwnProperty('auth')) {
-   console.log('dd');
-  }
-
+    Auth.value = localStorage.getItem('auth');
+    console.log(Auth.value);
+    if (Auth.value === "true") {
+        console.log("hello test");
+        localStorage.setItem('auth', false);
+        Auth.value = localStorage.getItem('auth');
+        location.reload();
+    }
 });
 
 </script>
@@ -270,4 +292,5 @@ input {
         margin-top: 11.719vw;
         border-radius: 1.563vw
     }
-}</style>
+}
+</style>

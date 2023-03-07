@@ -137,8 +137,8 @@ const postSearch = () => {
 }
 const logout = () => {
     localStorage.removeItem('token');
-    localStorage.removeItem('auth');
     localStorage.removeItem('user');
+    localStorage.setItem('auth',true)
 
     router.push({ name: 'login' });
 }

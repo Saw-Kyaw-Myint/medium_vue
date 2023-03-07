@@ -29,12 +29,13 @@
                     <input type="file" name="image" value="" @change="handleImageChange">
 
                     <p class="error-message">{{ errors?.image }}</p>
-                    <img :src="previewImage" v-if="previewImage" id="output" onerror="this.onerror=null;this.src='./img/image1.jpg';">
-                    <img :src="url+post?.image" v-else id="output">
+                    <img :src="previewImage" v-if="previewImage" id="output"
+                        onerror="this.onerror=null;this.src='./img/image1.jpg';">
+                    <img :src="url + post?.image" v-else id="output">
                 </div>
                 <div class="description">
-                    <textarea id="description-area" name="description" rows="5" 
-                        v-model="postForm.description" placeholder="write  Description about post"></textarea>
+                    <textarea id="description-area" name="description" rows="5" v-model="postForm.description"
+                        placeholder="write  Description about post"></textarea>
 
                     <p class="error-message">{{ errors?.description }}</p>
                 </div>
@@ -47,16 +48,17 @@
 <script setup >
 import axios from 'axios';
 import { ref, onMounted, reactive } from 'vue';
-import { useRouter,useRoute } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
+import Swal from 'sweetalert2';
 
 const router = useRouter();
-const route=useRoute();
+const route = useRoute();
 const imageFile = ref(null);
 const previewImage = ref(null);
 const currentUser = ref(JSON.parse(localStorage.getItem('user')));
 const categories = ref([]);
-const errors=ref(null);
-const post=ref(null);
+const errors = ref(null);
+const post = ref(null);
 const url = ref('http://127.0.0.1:8000/storage/');
 
 const postForm = reactive({
@@ -70,10 +72,10 @@ const postForm = reactive({
 onMounted(() => {
     axios.get(`http://127.0.0.1:8000/api/post/edit/${route.params.id}`).then((response) => {
         categories.value = response.data.categories;
-        post.value=response.data.post;
-        postForm.title=response.data.post.title;
-        postForm.category=response.data.post.categories;
-        postForm.description=response.data.post.description;
+        post.value = response.data.post;
+        postForm.title = response.data.post.title;
+        postForm.category = response.data.post.categories;
+        postForm.description = response.data.post.description;
     });
 })
 
@@ -97,11 +99,28 @@ const updatePost = async () => {
         },
     };
     await axios.post(`http://127.0.0.1:8000/api/post/update/${route.params.id}`, postForm, config).then((response) => {
-       
-     router.push({ name: 'home' });
+
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
+
+        Toast.fire({
+            icon: 'success',
+            title: 'Post is updated successfully'
+        })
+
+        router.push({ name: 'home' });
     }).catch(function (error) {
-   errors.value=error.response.data.errors;
-   console.log(error.response.data.errors);
+        errors.value = error.response.data.errors;
+        console.log(error.response.data.errors);
     });
 }
 
@@ -201,9 +220,10 @@ option {
     margin-bottom: 10px;
 }
 
-#description-area{
+#description-area {
     width: 100%;
 }
+
 .publish {
     padding: 8px 15px;
     border: none;
