@@ -19,3 +19,6 @@ app.mount('#app')
 
 import 'vue-select/dist/vue-select.css'
 
+
+// import 'bootstrap/dist/css/bootstrap.css'
+// import 'bootstrap/dist/js/bootstrap.js'

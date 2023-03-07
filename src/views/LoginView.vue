@@ -51,8 +51,9 @@ const login = async () => {
             }).then((response) => {
                localStorage.setItem('user', JSON.stringify(response.data));
                 localStorage.setItem('auth', true);
+                router.push({ name: 'home' })
             });
-            router.push({ name: 'home' })
+          
         } else {
             error.value = res.data.message;
         }

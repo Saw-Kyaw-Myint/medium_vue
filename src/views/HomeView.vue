@@ -1,7 +1,7 @@
 <script setup>
 import TheWelcome from '../components/TheWelcome.vue'
-import {  onMounted } from 'vue'
-import {useRoute} from "vue-router";
+import { onMounted } from 'vue'
+import { useRoute } from "vue-router";
 const route = useRoute();
 </script>
 
@@ -10,3 +10,32 @@ const route = useRoute();
     <TheWelcome />
   </main>
 </template>
+<style>
+.pagination {
+  display: flex;
+  list-style: none;
+  padding: 10px;
+  background: white;
+  padding-left: 0;
+  list-style: none;
+}
+.page-item{
+  padding: 10px;
+  border: 1px solid #e3e3e3;
+  background-color: #fff;
+ box-shadow: rgba(0, 0, 0, 0.09) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 0px 0px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.04) 0px 16px 8px, rgba(0, 0, 0, 0.04) 0px 32px 16px;
+ 
+}
+.page-item:first-child{
+  border-radius: 10px 0 0 10px;
+}
+.page-item:last-child{
+  border-radius: 0px 10px 10px 0px;
+}
+.active{
+  background-color: rgb(26, 26, 249);
+}
+.active .page-link{
+  color: white;
+}
+</style>

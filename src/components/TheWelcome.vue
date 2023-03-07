@@ -240,6 +240,8 @@ const postDelete = async (id) => {
 @import 'bootstrap/dist/css/bootstrap.css';
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed&family=Sofia+Sans+Condensed&display=swap');
 
+/* paginnation  */
+
 .create-user-img {
     width: 35px;
     border-radius: 50%;
