@@ -55,6 +55,8 @@
 				</div>
 			</form>
 		</div>
+
+		<!-- recurscive component  -->
 		<ReplyView v-if="comment.replies" :comments="comment.replies"
 			@listComment="(commentList) => $emit('listComment', commentList)" :postId="postId" :userId="userId"></ReplyView>
 
@@ -64,6 +66,7 @@
 <script setup >
 import { ref, reactive, onMounted } from 'vue'
 import axios from 'axios'
+
 const url = ref('http://127.0.0.1:8000/storage/');
 const updateForm = reactive({
 	comment: '',
@@ -83,22 +86,19 @@ const replyForm = reactive({
 	comment_id: '',
 });
 
-
-
 const props = defineProps({
 	comments: Array,
 	postId: Number,
 	userId: Number,
 })
 
-
 const emit = defineEmits('listComment');
 
+//update comment
 const updateComment = async (id, postId, comment) => {
 	updateForm.comment_id = id;
 	updateForm.comment = comment;
 	updateForm.post_id = postId;
-
 
 	await axios.post('http://127.0.0.1:8000/api/updateComment', updateForm).then((response) => {
 		emit('listComment')
@@ -106,17 +106,20 @@ const updateComment = async (id, postId, comment) => {
 
 }
 
+//update reply
 const updateReply = async (id, postId, patent_id, comment) => {
 	console.log(postId);
 	updateReplyForm.comment_id = id
 	updateReplyForm.comment = comment
 	updateReplyForm.post_id = postId,
 		updateReplyForm.parent_id = patent_id
+
 	await axios.post('http://127.0.0.1:8000/api/updateComment', updateReplyForm).then((response) => {
 		emit('listComment');
 	})
 }
 
+// store reply 
 const storeReply = async (id, postId, userId) => {
 	replyForm.comment_id = id;
 	replyForm.post_id = postId;
@@ -126,6 +129,7 @@ const storeReply = async (id, postId, userId) => {
 	});
 }
 
+// delete reply 
 const deleteComment = async (id) => {
 	await axios.delete(`http://127.0.0.1:8000/api/comment/${id}`)
 		.then((response) => {
@@ -136,7 +140,7 @@ const deleteComment = async (id) => {
 </script>
 
 <style scoped>
-.reply-button-group{
+.reply-button-group {
 	width: 100%;
 	display: flex;
 	align-items: center;

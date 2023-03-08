@@ -6,7 +6,7 @@
                 <div class="post-title">
                     <input type="text" name="title" placeholder="Post Title" v-model="postForm.title">
 
-                    <p class="error-message">{{ errors?.title }}</p>
+                    <p class="error-message">{{ errors?.title ? errors.title[0] : '' }}</p>
 
                 </div>
                 <div class="category">
@@ -24,20 +24,21 @@
                         </symbol>
                     </svg>
 
-                    <p class="error-message">{{ errors?.category }}</p>
+                    <p class="error-message">{{ errors?.category ? errors.category[0] : '' }}</p>
                 </div>
                 <div class="file">
                     <input type="file" name="image" value="" @change="handleImageChange">
 
-                    <p class="error-message">{{ errors?.image }}</p>
-                    <img :src="previewImage" v-if="previewImage" id="output" onerror="this.onerror=null;this.src='./img/image1.jpg';">
+                    <p class="error-message">{{ errors?.image ? errors.image[0] : '' }}</p>
+                    <img :src="previewImage" v-if="previewImage" id="output"
+                        onerror="this.onerror=null;this.src='./img/image1.jpg';">
                     <img src="./img/images.jpg" v-else id="output">
                 </div>
                 <div class="description">
-                    <textarea id="description-area" name="description" rows="5"
-                        v-model="postForm.description" placeholder="write  Description about post"></textarea>
+                    <textarea id="description-area" name="description" rows="5" v-model="postForm.description"
+                        placeholder="write  Description about post"></textarea>
 
-                    <p class="error-message">{{ errors?.description }}</p>
+                    <p class="error-message">{{ errors?.description ? errors.description[0] : '' }}</p>
                 </div>
                 <button type="submit" class="publish">Publish</button>
             </form>
@@ -56,8 +57,7 @@ const imageFile = ref(null);
 const previewImage = ref(null);
 const currentUser = ref(JSON.parse(localStorage.getItem('user')));
 const categories = ref([]);
-const errors=ref(null);
-
+const errors = ref(null);
 const postForm = reactive({
     title: '',
     category: [],
@@ -72,6 +72,7 @@ onMounted(() => {
     });
 })
 
+//for image
 const handleImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -85,6 +86,7 @@ const handleImageChange = (event) => {
     }
 };
 
+// store Post 
 const storePost = async () => {
     const config = {
         headers: {
@@ -93,25 +95,25 @@ const storePost = async () => {
     };
     await axios.post('http://127.0.0.1:8000/api/posts', postForm, config).then((response) => {
         const Toast = Swal.mixin({
-                toast: true,
-                position: 'top',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
-            })
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
 
-            Toast.fire({
-                icon: 'success',
-                title: 'Post is created is successfully'
-            })
+        Toast.fire({
+            icon: 'success',
+            title: 'Post is created is successfully'
+        })
         router.push({ name: 'home' });
     }).catch(function (error) {
-   errors.value=error.response.data.errors;
-   console.log(error.response.data.errors);
+        errors.value = error.response.data.errors;
+        console.log(error.response.data.errors);
     });
 }
 
@@ -211,8 +213,9 @@ option {
     margin-bottom: 10px;
 }
 
-#description-area{
+#description-area {
     width: 100%;
+    outline: none;
 }
 
 
@@ -231,9 +234,10 @@ option {
         padding: 0 5.208vw;
     }
 
+
     .post-whole {
         margin: 3.906vw;
-        margin-top: 5.859vw;
+        margin-top: 14.859vw;
         padding: 4.427vw;
         border: 0.26vw solid rgb(178 178 178);
         border-radius: 1.042vw;
@@ -267,7 +271,7 @@ option {
     .description {
         margin-bottom: 1.042vw;
     }
-  
+
     .publish {
         padding: 0.781vw 1.693vw;
         border: none;
@@ -341,5 +345,4 @@ option {
         font-size: 11.002px;
         border-radius: 3.002px;
     }
-}
-</style>
+}</style>

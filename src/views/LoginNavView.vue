@@ -2,7 +2,7 @@
     <div class="">
         <header>
             <div>
-                <p class="btn-gnavi">
+                <p class="btn-gnavi" @click="showNav">
                     <span></span>
                     <span></span>
                     <span></span>
@@ -11,12 +11,9 @@
                     <div class="lright-menu">
                         <div class="login-hright">
                             <h1>
-                                <!-- @if (Auth::user()) -->
                                 <RouterLink to="/"><img src="../assets/template/logo.png" alt="">
                                 </RouterLink>
-                                <!-- @endif -->
                             </h1>
-                            <!-- @if (Auth::user()) -->
                             <div class="input-group">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                                     <path fill-rule="evenodd" clip-rule="evenodd"
@@ -32,21 +29,9 @@
                         </div>
                     </div>
                     <div class="left-aside">
-                        <!-- @if (Auth::user()) -->
-                        <div class="language-change">
-                            <select class="lang-change" id="cmbIdioma" style="width: 200px;">
-                                <option value="United_Kimdom">English
-                                </option>
-                                <option value="Myanmar">
-                                    မြန်မာ
-                                </option>
-                            </select>
-                        </div>
 
-                        <!-- @endif -->
                         <nav id="global-navi">
                             <ul class="menu">
-                                <!-- @if (Auth::user()) -->
                                 <router-link to="/post/create">
                                     <li class="left-write">
                                         <a href="{{ route('post.create') }}" class="write-link">
@@ -64,7 +49,6 @@
                                 <li class="menu-toggle" @click="slideBoard">
                                     <div class="select-box">
                                         <div class="small-menu">
-                                            <!-- @if (Auth::user()) -->
                                             <img :src="url + user.profile" alt="">
                                             <p class="down-icon">
                                                 <svg width="12px" height="12px" viewBox="0 0 15 15">
@@ -76,24 +60,28 @@
                                         </div>
                                     </div>
                                 </li>
-                                <div class="custom-dashboard" v-if="customBoard" @dblclick="customBoard = false">
-                                    <p><router-link :to="{ name: 'profile', params: { id: user?.id } }" @click="customBoard=false"><svg width="24"
-                                                height="24" viewBox="0 0 24 24" fill="none" aria-label="Profile">
+                                <div class="custom-dashboard">
+                                    <p><router-link :to="{ name: 'profile', params: { id: user?.id } }"
+                                            @click="customBoard = false"><svg width="24" height="24" viewBox="0 0 24 24"
+                                                fill="none" aria-label="Profile">
                                                 <circle cx="12" cy="7" r="4.5" stroke="currentColor">
                                                 </circle>
                                                 <path d="M3.5 21.5v-4.34C3.5 15.4 7.3 14 12 14s8.5 1.41 8.5 3.16v4.34"
                                                     stroke="currentColor" stroke-linecap="round"></path>
                                             </svg> profile</router-link></p>
-                                    <p><a href=""><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    <p><router-link to="/"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                                 aria-label="Lists">
                                                 <path
                                                     d="M6.44 6.69h0a1.5 1.5 0 0 1 1.06-.44h9c.4 0 .78.16 1.06.44l.35-.35-.35.35c.28.28.44.66.44 1.06v14l-5.7-4.4-.3-.23-.3.23-5.7 4.4v-14c0-.4.16-.78.44-1.06z"
                                                     stroke="currentColor"></path>
                                                 <path d="M12.5 2.75h-8a2 2 0 0 0-2 2v11.5" stroke="currentColor"
                                                     stroke-linecap="round"></path>
-                                            </svg>post list</a></p>
-                                            
-                                    <p class="custom-logout"><button @click="logout"> logout</button></p>
+                                            </svg>post list</router-link></p>
+
+                                    <p class="custom-logout">
+                                        <svg width="28" height="29" viewBox="0 0 28 29" fill="none" class="ih y"><path fill="#fff" d="M0 .8h28v28H0z"></path><g opacity="0.8" clip-path="url(#trending_svg__clip0)"><path fill="#fff" d="M4 4.8h20v20H4z"></path><circle cx="14" cy="14.79" r="9.5" stroke="#000"></circle><path d="M5.46 18.36l4.47-4.48M9.97 13.87l3.67 3.66M13.67 17.53l5.1-5.09M16.62 11.6h3M19.62 11.6v3" stroke="#000" stroke-linecap="round"></path></g><defs><clipPath id="trending_svg__clip0"><path fill="#fff" transform="translate(4 4.8)" d="M0 0h20v20H0z"></path></clipPath></defs></svg>
+                                        <button @click="logout"> logout</button>
+                                    </p>
 
                                 </div>
 
@@ -109,24 +97,25 @@
 <script setup>
 import { ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
-import axios from 'axios';
+import $ from 'jquery';
 
-//
 const router = useRouter();
 const searchVal = ref();
 const customBoard = ref(false);
 const user = ref();
-
+const btnGnavi = ref();
 const url = ref('http://127.0.0.1:8000/storage/');
 
 watchEffect(() => {
     user.value = JSON.parse(localStorage.getItem('user'));
 });
 
-//function
+//slide custom board
 const slideBoard = () => {
-    customBoard.value = !(customBoard.value);
+    $('.custom-dashboard').slideToggle();
 }
+
+//search post
 const postSearch = () => {
     if (searchVal.value.trim() !== '') {
         router.push({ name: 'home', query: { q: searchVal.value } });
@@ -135,12 +124,28 @@ const postSearch = () => {
         router.push({ name: 'home' })
     }
 }
+
+//logout
 const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    localStorage.setItem('auth',true)
+    localStorage.setItem('auth', true)
 
     router.push({ name: 'login' });
+}
+
+//show Navbar
+const showNav = () => {
+    var rightVal = 0;
+    if ($('.btn-gnavi').hasClass('hb-open')) {
+        rightVal = -500;
+        $('.btn-gnavi').removeClass('hb-open');
+    } else {
+        $('.btn-gnavi').addClass('hb-open');
+    }
+    $('#global-navi').stop().animate({
+        top: rightVal
+    }, 500);
 }
 
 </script>
@@ -275,9 +280,12 @@ ul li a {
 
 .custom-logout button {
     border: none;
-    width: 100%;
     background: transparent;
-    padding: 10px;
+     color: rgb(177, 27, 27);
+     font-weight: bold;
+}
+.custom-logout svg{
+    color: red;
 }
 
 .custom-dashboard {
@@ -287,7 +295,8 @@ ul li a {
     width: auto !important;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     overflow: hidden !important;
-    top: 33px;
+    top: 43px;
+    display: none;
     border-radius: 3px;
 }
 
@@ -301,9 +310,9 @@ ul li a {
 }
 
 .custom-dashboard p {
-    /* display: block; */
-    display: block;
+    display: flex;
     height: 40px;
+    align-items: center;
     line-height: 3;
     padding: 3px 23px 0px 10px !important;
     border-bottom: 1px solid #8d8d8d;
@@ -477,7 +486,7 @@ ul li {
         color: #363636;
         align-items: center;
         text-align: center;
-
+        justify-content: center;
         height: 33px;
         line-height: 1.8;
     }

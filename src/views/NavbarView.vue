@@ -2,7 +2,7 @@
     <div >
     <header>
         <div class="container">
-            <p class="btn-gnavi">
+            <p class="btn-gnavi" @click="showNav">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -28,7 +28,22 @@
 </template>
 <script setup >
 import $ from "jquery"
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink } from 'vue-router'
+
+//slide navbar
+const showNav=()=>{
+        var rightVal = 0;
+        if ($('.btn-gnavi').hasClass('hb-open')) {
+          rightVal = -500;
+          $('.btn-gnavi').removeClass('hb-open');
+        } else {
+          $('.btn-gnavi').addClass('hb-open');
+        }
+        $('#global-navi').stop().animate({
+          top: rightVal
+        }, 500);
+}
+
 </script>
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed&family=Sofia+Sans+Condensed&display=swap');

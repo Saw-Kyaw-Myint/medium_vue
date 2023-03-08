@@ -5,7 +5,7 @@
             <form @submit.prevent="updatePost">
                 <div class="post-title">
                     <input type="text" name="title" placeholder="Post Title" v-model="postForm.title">
-                    <p class="error-message">{{ errors?.title }}</p>
+                    <p class="error-message">{{ errors?.title ? errors.title[0] : '' }}</p>
 
                 </div>
                 <div class="category">
@@ -23,12 +23,12 @@
                         </symbol>
                     </svg>
 
-                    <p class="error-message">{{ errors?.category }}</p>
+                    <p class="error-message">{{ errors?.category ? errors.category[0] : '' }}</p>
                 </div>
                 <div class="file">
                     <input type="file" name="image" value="" @change="handleImageChange">
 
-                    <p class="error-message">{{ errors?.image }}</p>
+                    <p class="error-message">{{ errors?.image ? errors.image[0] : '' }}</p>
                     <img :src="previewImage" v-if="previewImage" id="output"
                         onerror="this.onerror=null;this.src='./img/image1.jpg';">
                     <img :src="url + post?.image" v-else id="output">
@@ -37,7 +37,7 @@
                     <textarea id="description-area" name="description" rows="5" v-model="postForm.description"
                         placeholder="write  Description about post"></textarea>
 
-                    <p class="error-message">{{ errors?.description }}</p>
+                    <p class="error-message">{{ errors?.description ? errors.description[0]  : '' }}</p>
                 </div>
                 <button type="submit" class="publish">Publish</button>
             </form>
@@ -60,7 +60,6 @@ const categories = ref([]);
 const errors = ref(null);
 const post = ref(null);
 const url = ref('http://127.0.0.1:8000/storage/');
-
 const postForm = reactive({
     title: '',
     category: [],
@@ -79,6 +78,7 @@ onMounted(() => {
     });
 })
 
+// for image 
 const handleImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -92,6 +92,7 @@ const handleImageChange = (event) => {
     }
 };
 
+//update Post
 const updatePost = async () => {
     const config = {
         headers: {

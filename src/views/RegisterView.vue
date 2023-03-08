@@ -3,58 +3,43 @@
         <div class="login-whole">
             <h2>Sign Up</h2>
             <form @submit.prevent="register" method="POST">
-                <!-- @csrf -->
                 <div class="input-group">
                     <div class="left-form">
                         <div class="form-group">
                             <label for="name">Name</label>
                             <input type="text" id="name" name="name" placeholder="Your Name" v-model="form.name">
-                            <!-- @error('name') -->
-                            <p class="error-message">{{ errors.name }}</p>
-                            <!-- @enderror -->
+                            <p class="error-message">{{ errors?.name ? errors.name[0] : '' }}</p>
                         </div>
                         <div class="form-group">
                             <label for="password">Password</label>
-                            <input type="password"  id="password" name="password"
-                            v-model="form.password"
+                            <input type="password" id="password" name="password" v-model="form.password"
                                 placeholder="Password">
-                            <!-- @error('password') -->
-                            <p class="error-message">{{ errors.password }}</p>
-                            <!-- @enderror -->
+                            <p class="error-message">{{ errors?.password ? errors.password[0] : '' }}</p>
                         </div>
                     </div>
 
                     <div class="right-form">
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input type="text"  id="email" name="email"  v-model="form.email"
+                            <input type="text" id="email" name="email" v-model="form.email"
                                 placeholder="Your Email(example@gmail.com">
-                            <!-- @error('email') -->
-                            <p class="error-message">{{ errors.email }}</p>
-                            <!-- @enderror -->
+                            <p class="error-message">{{ errors?.email ? errors.email[0] : '' }}</p>
                         </div>
                         <div class="form-group">
                             <label for="password">Confirm Password</label>
                             <input type="password" id="confirmpassword" v-model="form.confirm_password"
                                 name="confirm_password" placeholder="Confirm Password">
-                            <!-- @error('confirm_password') -->
-                            <p class="error-message">{{ errors.confirm_password }}</p>
-                            <!-- @enderror -->
+                            <p class="error-message">{{ errors?.confirm_password ? errors.password[0] : '' }}</p>
                         </div>
                     </div>
                 </div>
                 <div class="bio-input">
                     <label for="bio">Bio</label>
-                    <input type="text" placeholder="Your bio" id="bio" name="bio"  v-model="form.bio">
-                    <!-- @error('bio') -->
-                    <p class="error-message">{{ errors.bio }}</p>
-                    <!-- @enderror -->
+                    <input type="text" placeholder="Your bio" id="bio" name="bio" v-model="form.bio">
+                    <p class="error-message">{{ errors?.bio ? errors.bio[0] : '' }}</p>
                 </div>
                 <button type="submit" class="signUp">SignUP</button>
             </form>
-            <div class="">
-
-            </div>
         </div>
     </div>
 </template>
@@ -65,58 +50,52 @@ import axios from 'axios'
 import { useRouter } from "vue-router";
 const router = useRouter();
 
-let form = reactive(
-  {
-    name: '',
-    email: '',
-    password: '',
-    confirm_password:'',
-    bio:''
-  });
-  
+const form = reactive(
+    {
+        name: '',
+        email: '',
+        password: '',
+        confirm_password: '',
+        bio: ''
+    });
+const errors = ref({})
+const error = ref();
 
-let errors = ref({})
-let error=ref();
-
-
+//register method
 const register = async () => {
-  await axios.post('http://127.0.0.1:8000/api/register', form).then(res => {
-    console.log(res.data.message.email,res.data.message.password);
-    if (res.data.success) {
-         axios.post('http://127.0.0.1:8000/api/login', res.data.message).then(res => {
-        if (res.data.success) {
-            localStorage.setItem('token', res.data.token)
-            alert('aung p');
-            authUser();
-            router.push({ name: 'home' })
-        } else {
-            error.value = res.data.message;
-        }
+    await axios.post('http://127.0.0.1:8000/api/register', form).then(res => {
+        console.log(res.data.message.email);
+
+            axios.post('http://127.0.0.1:8000/api/login', res.data.message).then(res => {
+                localStorage.setItem('token', res.data.token)
+                const token = localStorage.getItem('token');
+                axios.get('http://127.0.0.1:8000/api/user', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }).then((response) => {
+                    localStorage.setItem('user', JSON.stringify(response.data));
+                    localStorage.setItem('auth', true);
+                    router.push({ name: 'home' })
+                });
+
+            }).catch(function (error) {
+                errors.value = error.response.data.errors;
+            });
+    
     }).catch(function (error) {
         errors.value = error.response.data.errors;
     });
-    } else {
-      error.value = res.data.message;
-    }
-  }).catch(function (error) {
-   errors.value=error.response.data.errors;ei
-    });
 }
 
-const authUser=async()=>{
-    const token = localStorage.getItem('token');
-  await axios.get('http://127.0.0.1:8000/api/user', {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }).then((response) => {
-    Authuser.value = response.data;
-    localStorage.setItem('auth',true);
-  });
+//store current user
+const authUser = async () => {
+
 }
 </script>
-<style>
+<style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed&family=Sofia+Sans+Condensed&display=swap');
+
 body {
     font-family: 'Roboto Condensed', sans-serif;
 }
@@ -137,7 +116,7 @@ body {
     display: inline-block;
     color: #ff0000;
     font-size: 16px;
-    top: 66px;
+    top: 76px;
     margin: 5px 0;
     width: 100%;
     left: 4px;
@@ -211,15 +190,19 @@ input {
 }
 
 @media screen and (max-width:768px) {
-
-
     .contianer {
-        width: auto;
-        padding: 5.208vw;
+        width: auto !important;
+        padding: 5.208vw 9 !important;
+    }
+
+    .error-message {
+        top: 8.203vw;
+        margin: 0.651vw 0;
     }
 
     .login-whole {
         margin: 9.115vw;
+        margin-top: 23vw;
         border: 0.26vw solid #cbcbcb;
         border-radius: 2.344vw;
         padding: 3.646vw;
@@ -231,7 +214,7 @@ input {
     }
 
     .form-group {
-        margin-bottom: 1.042vw;
+        margin-bottom: 4.042vw;
     }
 
     .left-form {
@@ -259,7 +242,7 @@ input {
     }
 
     .bio-input {
-        margin-bottom: 1.042vw;
+        margin-bottom: 4.042vw;
     }
 
     .signUp {
@@ -270,13 +253,14 @@ input {
 
 
 @media screen and (max-width:640px) {
-    .contianer {
-        width: auto;
-        padding: 3.125vw;
+
+    .container {
+        width: 100%;
+        padding: 0 20px;
     }
 
     .login-whole {
-        margin: 9.375vw;
+        margin: 3.375vw;
         margin-top: 18.75vw;
         border: 0.313vw solid #cbcbcb;
         border-radius: 2.5vw;
@@ -321,12 +305,12 @@ input {
     .error-message {
         font-size: 1.8vw;
         margin: 4.998px 0;
-        top: -3.125vw;
+        top: 8.125vw;
         left: 0.313vw;
     }
 
     .bio-input {
-        margin-bottom: 0.938vw;
+        margin-bottom: 3.938vw;
     }
 
     .signUp {
@@ -334,4 +318,5 @@ input {
         font-size: 2.344vw;
         border-radius: 0.938vw;
     }
-}</style>
+}
+</style>

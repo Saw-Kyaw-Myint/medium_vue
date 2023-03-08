@@ -19,8 +19,8 @@
 										</router-link>
 									</div>
 								</div>
-								
-								<div class="right-header" v-if="currentUser?.id==post.user?.id">
+
+								<div class="right-header" v-if="currentUser?.id == post.user?.id">
 									<form action="" method="post">
 										<p class="del-btn" @click="postDelete">Delete</p>
 									</form>
@@ -54,7 +54,7 @@
 						<div class="category-post clearfix" v-for="(relatePost, index) in relatedPosts" :key="index">
 
 							<div class="left-side">
-								<router-link :to="{name:'profile',params:{id:relatePost?.user.id}}">
+								<router-link :to="{ name: 'profile', params: { id: relatePost?.user.id } }">
 									<div class="left-side-header">
 										<img :src="url + relatePost.user?.profile" alt="" class="category-profile" />
 										<p class="category-profile-name">{{ relatePost.user?.name }}</p>
@@ -86,10 +86,10 @@
 				<p class="comment-here">Message in here</p>
 				<form @submit.prevent="createComment">
 					<textarea name="comment" id="" v-model="commentForm.comment"
-						placeholder="{{ __('message.comment_placeholder') }}" class="comment-description"
+						placeholder="write comment" class="comment-description"
 						required></textarea>
 					<input type="hidden" name="post_id" v-model="commentForm.post_id" />
-					<button type="submit" class="comment-btn" >create</button>
+					<button type="submit" class="comment-btn">create</button>
 				</form>
 
 				<ReplyView :comments="comments" :postId="post.id" :userId="user_id" @listComment="commentList()">
@@ -101,14 +101,14 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch, onMounted, inject, watchEffect } from "vue";
+import { ref, reactive, watchEffect } from "vue";
 import ReplyView from "./ReplyView.vue";
 import axios from "axios";
 import moment from 'moment';
 import { useRoute, useRouter, RouterLink } from "vue-router";
 
 const route = useRoute();
-const router=useRouter();
+const router = useRouter();
 const post = ref({});
 const relatedPosts = ref();
 const comments = ref();
@@ -117,19 +117,14 @@ const commentCount = ref('');
 const post_id = ref();
 const countPost = ref();
 const currentUser = ref(JSON.parse(localStorage.getItem('user')));
-
+const url = ref('http://127.0.0.1:8000/storage/');
 const commentForm = reactive({
 	comment: '',
 	user_id: user_id,
 	post_id: post_id
 })
 
-const url = ref('http://127.0.0.1:8000/storage/');
-
 watchEffect(async () => {
-
-	
-
 	await axios
 		.get(`http://127.0.0.1:8000/api/posts/${route.params.id}`)
 		.then((response) => {
@@ -142,11 +137,12 @@ watchEffect(async () => {
 	commentList();
 });
 
-
+// format date
 function formatDate(date) {
 	return moment(date).format('MMMM Do');
 }
 
+//comment List
 const commentList = async () => {
 	await axios.get(`http://127.0.0.1:8000/api/comment/${route.params.id}`).then((response) => {
 		comments.value = response.data;
@@ -154,27 +150,27 @@ const commentList = async () => {
 
 }
 
+//delete Post
 const postDelete = async () => {
-    await axios.delete(`http://127.0.0.1:8000/api/posts/${route.params.id}`).then((response) => {
+	await axios.delete(`http://127.0.0.1:8000/api/posts/${route.params.id}`).then((response) => {
 		console.log(response.data);
-        router.push({ name: 'home' })
-    })
+		router.push({ name: 'home' })
+	})
 }
 
+// create comment 
 const createComment = async () => {
-	if(currentUser.value==null){
-		router.push({name:'login'});
+	if (currentUser.value == null) {
+		router.push({ name: 'login' });
 	}
-	
+
 	user_id.value = currentUser.value.id;
 
 	await axios.post('http://127.0.0.1:8000/api/comment', commentForm).then((response) => {
-		
 		commentForm.comment = '';
 		commentList();
 	})
 }
-
 
 </script>
 
@@ -372,12 +368,12 @@ body {
 
 .comment-btn {
 	display: inline-block;
-    margin: 10px 10px 10px 92%;
-    padding: 12px 23px;
-    border: none;
-    background-color: rgb(139 139 139);
-    color: #fff;
-    border-radius: 10px;
+	margin: 10px 10px 10px 92%;
+	padding: 12px 23px;
+	border: none;
+	background-color: rgb(139 139 139);
+	color: #fff;
+	border-radius: 10px;
 }
 
 #edit-comtext {
@@ -487,7 +483,7 @@ body {
 
 .category-post .left-side {
 	float: left;
-	width: 80%;
+	width: 100%;
 	border-bottom: 1px solid #eccece;
 }
 
@@ -537,6 +533,18 @@ body {
 	.container {
 		width: auto;
 		padding: 0 39.997px;
+	}
+
+	.delete-comment {
+		margin-right: 10px;
+		padding: 4px 9px;
+		border-radius: 10px;
+	}
+
+	.comment-reply {
+		width: 8.724vw;
+		padding: 0.521vw 0;
+		border-radius: 1.302vw;
 	}
 
 	.detail-post {
@@ -647,7 +655,7 @@ body {
 	}
 
 	.comment-description {
-		width: 95%;
+		width: 100%;
 		margin-top: 9.999px;
 		padding: 14.001px;
 		border: 0.998px solid;
@@ -655,12 +663,9 @@ body {
 	}
 
 	.comment-btn {
-		display: inline-block;
-		margin: 9.999px 9.999px 9.999px 92%;
-		margin-left: 502.003px !important;
-		padding: 5px;
-		background-color: rgb(206, 206, 206);
-		color: #fff;
+		margin: 11.999px 9.999px 9.999px 92%;
+		/* margin-left: 502.003px !important; */
+		padding: 5px 10px;
 		font-size: 12.004px;
 		border-radius: 9.999px;
 	}
@@ -756,7 +761,6 @@ body {
 
 	.category-post .left-side {
 		float: left;
-		width: 80%;
 	}
 
 	.left-side-header {
@@ -801,6 +805,18 @@ body {
 	.container {
 		width: auto;
 		padding: 0 6.25vw;
+	}
+
+	.comment-reply {
+		width: 7.724vw;
+		padding: 0.421vw 0;
+		border-radius: 1.302vw;
+	}
+
+	.delete-comment {
+		margin-right: px;
+		padding: 0.469vw 1.25vw;
+		border-radius: 1.563vw;
 	}
 
 	.detail-post {

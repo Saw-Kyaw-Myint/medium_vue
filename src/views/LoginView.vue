@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="login-form">
-            <p class="error-message" v-if="error">{{ error }}</p>
+            <p class="error-message text-align-center" v-if="error">{{ error }}</p>
             <h2>Login</h2>
 
             <form @submit.prevent="login">
@@ -9,15 +9,16 @@
                     <label for="email">Email</label>
                     <input type="text" id="email" name="email" v-model="form.email"
                         placeholder="Youremail(example@gmail.com)">
-                    <span class="error-message">{{ errors?.email }}</span>
+                    <p class="error-message">{{ errors?.email ? errors.email[0] : '' }}</p>
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
                     <input type="password" id="password" v-model="form.password" name="password" placeholder="Password">
-                    <span class="error-message">{{ errors?.password }}</span>
+                    <p class="error-message">{{ errors?.password ? errors.password[0] : '' }}</p>
                 </div>
                 <button type="submit" class="login">Login</button>
             </form>
+
         </div>
     </div>
 </template>
@@ -25,21 +26,20 @@
 
 import Swal from 'sweetalert2'
 import { ref, reactive, watchEffect, watch } from 'vue'
-import Swal from 'sweetalert2'
 import axios from 'axios'
 import { useRouter } from "vue-router";
-const router = useRouter();
 
-let form = reactive(
+const router = useRouter();
+const form = reactive(
     {
         email: '',
         password: ''
     });
-
-let error = ref('');
-let errors = ref({});
+const error = ref('');
+const errors = ref({});
 const Auth = ref('');
 
+//login method
 const login = async () => {
     await axios.post('http://127.0.0.1:8000/api/login', form).then(res => {
         if (res.data.success) {
@@ -93,7 +93,7 @@ watchEffect(() => {
 });
 
 </script>
-<style>
+<style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed&family=Sofia+Sans+Condensed&display=swap');
 
 body {
@@ -118,6 +118,10 @@ body {
     background: #ff0000;
     color: #fff;
     border-radius: 10px
+}
+.text-align-center{
+    text-align: center;
+    width: 100%;
 }
 
 .alert-message {

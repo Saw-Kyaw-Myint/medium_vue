@@ -13,11 +13,6 @@ watchEffect(() => {
     location.reload();
   }
 })
-
-onMounted(() => {
-  console.log(Auth.value);
-})
-
 </script>
 
 <template>

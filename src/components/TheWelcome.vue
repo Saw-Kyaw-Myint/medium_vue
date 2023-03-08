@@ -3,9 +3,11 @@
         <section class="vender" v-if="notAuth">
             <div class="container">
                 <h2>Stay Curious</h2>
-                <p>Discover sotories,thing,and expertise <br>
-                    from writers on any topic</p>
-                <a href="{{ route('register.create') }}">Start reading</a>
+                <p>
+                    Discover sotories,thing,and expertise <br />
+                    from writers on any topic
+                </p>
+                    <a href="#">Start reading</a>
             </div>
         </section>
 
@@ -14,55 +16,53 @@
                 <div class="clearfix">
                     <div class="post-list">
                         <h2 class="search-result">{{ search }}</h2>
+                        <!--post-user-->
                         <div v-for="(post, index) in posts.data" :key="index">
                             <div class="post">
-
                                 <div class="people">
                                     <router-link :to="{ name: 'profile', params: { id: post?.user?.id } }">
                                         <div class="clearfix">
                                             <div class="profile-img">
-                                                <img :src="url + post.user?.profile" class="create-user-img"
-                                                    onerror="this.onerror=null;this.src='';">
+                                                <img :src="url + post.user?.profile" class="create-user-img"/>
                                             </div>
                                             <p class="name">{{ post.user.name }}</p>
                                         </div>
                                     </router-link>
                                 </div>
-                                <router-link :to="{ name: 'detail', params: { id: post.id } }">
-                                    <div class="clearfix">
-                                        <div class="post-text">
 
-                                            <!--post-user-->
-
-                                            <div>
+                                <div class="clearfix">
+                                    <div class="post-text">
+                                        <div>
+                                            <router-link :to="{ name: 'detail', params: { id: post.id } }">
                                                 <h2 class="post-title">{{ post?.title }}</h2>
                                                 <p class="post-description">
-                                                    {{ short(post?.description) }}</p>
-                                                <div class="post-footer">
-                                                    <div class="postfo-left">
-
-                                                        <a v-for="(category, index) in post.categories" :key="index"
-                                                            @click="searchCategory(category.ctitle)">
-                                                            <span>{{ category.ctitle }}</span>
-                                                        </a>
-
-                                                    </div>
+                                                    {{ short(post?.description) }}
+                                                </p>
+                                            </router-link>
+                                            <div class="post-footer">
+                                                <div class="postfo-left">
+                                                    <a v-for="(category, index) in post.categories" :key="index"
+                                                        @click="searchCategory(category.ctitle)">
+                                                        <span>{{ category.ctitle }}</span>
+                                                    </a>
+                                                </div>
+                                                <router-link :to="{ name: 'detail', params: { id: post.id } }">
                                                     <p class="post-date">
                                                         <!-- {{ formatDate(post.created_at) }}  -->
-                                                        <span>{{
-                                                            minuteAgo(post?.created_at) }}</span>
+                                                        <span>{{ minuteAgo(post?.created_at) }}</span>
                                                     </p>
-
-                                                </div>
+                                                </router-link>
                                             </div>
                                         </div>
+                                    </div>
+                                    <router-link :to="{ name: 'detail', params: { id: post.id } }">
                                         <div class="post-img">
                                             <img :src="url + post.image" alt="" width="100%" height="100%"
-                                                onerror="this.onerror=null;this.src='../assets/template/people.jfif';">
+                                                onerror="this.onerror=null;this.src='../assets/template/people.jfif';" />
                                         </div>
-                                        <!--post-left-->
-                                    </div>
-                                </router-link>
+                                    </router-link>
+                                    <!--post-left-->
+                                </div>
 
                                 <div class="postfo-right">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="tr">
@@ -71,9 +71,8 @@
                                             fill="#000"></path>
                                     </svg>
 
-
-                                    <p class="see-tools" onclick="editDelete({{ $post->id }})" v-if="notAuth==false && user.id==post.user.id"
-                                        @click="post.edit = !post.edit">
+                                    <p class="see-tools" onclick="editDelete({{ $post->id }})"
+                                        v-if="notAuth == false && user.id == post.user.id" @click="post.edit = !post.edit">
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                                             <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM8.25 12h7.5"
                                                 stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -85,33 +84,37 @@
                                             Delete
                                         </button>
                                         <div class="">
-                                            <router-link :to='{ name: "edit", params: { id: post?.id } }'>Edit
+                                            <router-link :to="{ name: 'edit', params: { id: post?.id } }">Edit
                                             </router-link>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
-                        <Bootstrap5Pagination :data="posts" @pagination-change-page="(newPage) => currentPage = newPage" />
+
+                        <Bootstrap5Pagination :data="posts"
+                            @pagination-change-page="(newPage) => (currentPage = newPage)" /> <!--paginate-->
                     </div>
+
                     <div class="category">
                         <div class="category-list">
                             <h2 class="cate-name">2022 IN Latest Post</h2>
                             <div v-for="(lpost, index) in latestPosts" :key="index">
-                                <router-link :to='{ name: "detail", params: { id: lpost?.id } }'>
+                                <router-link :to="{ name: 'detail', params: { id: lpost?.id } }">
                                     <div class="latest-post-whole">
                                         <div class="latest-post">
                                             <div class="list-latest-profile">
                                                 <a href="#">
                                                     <img :src="url + lpost.user.profile" alt="" width="100%" height="100%"
-                                                        onerror="this.onerror=null;this.src='{{ asset('template/people.jfif') }}';">
+                                                        onerror="this.onerror=null;this.src='{{ asset('template/people.jfif') }}';" />
                                                     <p class="name">{{ lpost.user.name }}</p>
                                                 </a>
                                             </div>
                                         </div>
                                         <a href="{{ route('post.show', $lpost->id) }}">
-                                            <div class="latest-description">{{ latestShort(lpost.description) }}</div>
+                                            <div class="latest-description">
+                                                {{ latestShort(lpost.description) }}
+                                            </div>
                                         </a>
                                     </div>
                                 </router-link>
@@ -121,7 +124,7 @@
                             <a v-for="(category, index) in categories" :key="index"
                                 @click="searchCategory(category.ctitle)">{{ category.ctitle }}</a>
                         </div>
-                    </div>
+                    </div> <!--category-->
 
                 </div>
             </div>
@@ -129,15 +132,13 @@
     </div>
 </template>
 <script setup>
-import 'bootstrap/dist/js/bootstrap.js'
-import { ref, onMounted, watchEffect } from 'vue';
-import Swal from 'sweetalert2'
-import { Bootstrap5Pagination } from 'laravel-vue-pagination';
-
-import { useRouter, RouterLink, useRoute } from 'vue-router';
-import moment from 'moment';
-import axios from 'axios';
-
+import "bootstrap/dist/js/bootstrap.js";
+import { ref, onMounted, watchEffect } from "vue";
+import Swal from "sweetalert2";
+import { Bootstrap5Pagination } from "laravel-vue-pagination";
+import { useRouter, RouterLink, useRoute } from "vue-router";
+import moment from "moment";
+import axios from "axios";
 
 const router = useRouter();
 const currentPage = ref(1);
@@ -145,98 +146,102 @@ const getroute = useRoute();
 const posts = ref([]);
 const latestPosts = ref([]);
 const categories = ref([]);
-const search = ref('');
+const search = ref("");
 const notAuth = ref(null);
 const user = ref(null);
 const laravelData = ref({});
-
-const url = ref('http://127.0.0.1:8000/storage/');
+const url = ref("http://127.0.0.1:8000/storage/");
 
 watchEffect(async () => {
-    notAuth.value = localStorage.getItem('user') ? false : true;
-    user.value =JSON.parse(localStorage.getItem('user'));
+    notAuth.value = localStorage.getItem("user") ? false : true;
+    user.value = JSON.parse(localStorage.getItem("user"));
 
-  
+    const searchCategory = ref(getroute.query.category || "");
+    axios
+        .get(`http://127.0.0.1:8000/api/posts?page=${currentPage.value}`, {
+            params: {
+                q: getroute.query.q,
+            },
+        })
+        .then((response) => {
+            search.value = response.data.search;
+            posts.value = response.data.posts;
+            latestPosts.value = response.data.latestPosts;
+            categories.value = response.data.categories;
+        });
 
-    const searchCategory = ref(getroute.query.category || '');
-    axios.get(`http://127.0.0.1:8000/api/posts?page=${currentPage.value}`, {
-        params: {
-            q: getroute.query.q
-        }
-    }).then((response) => {
-        search.value = response.data.search;
-        posts.value = response.data.posts;
-        latestPosts.value = response.data.latestPosts;
-        categories.value = response.data.categories;
-    });
-
-    await axios.get(`http://127.0.0.1:8000/api/${searchCategory.value}`).then((response) => {
-        console.log(response.data);
-        posts.value = response.data.posts;
-        search.value = response.data.search;
-        latestPosts.value = response.data.latestPosts;
-        categories.value = response.data.categories;
-    });
+    await axios
+        .get(`http://127.0.0.1:8000/api/${searchCategory.value}`)
+        .then((response) => {
+            console.log(response.data);
+            posts.value = response.data.posts;
+            search.value = response.data.search;
+            latestPosts.value = response.data.latestPosts;
+            categories.value = response.data.categories;
+        });
 });
 
-
+// search by category 
 const searchCategory = async (category) => {
-    router.push({ name: 'home', query: { category: category } });
-}
+    router.push({ name: "home", query: { category: category } });
+};
 
+// date format 
 const formatDate = (date) => {
-    return moment(date).format('MMMM Do');
-}
+    return moment(date).format("MMMM Do");
+};
 
+// minute format 
 const minuteAgo = (date) => {
     return moment(date).fromNow();
-}
+};
 
+// cut description 
 const short = (value) => {
     if (value.length > 70) {
         return value.slice(0, 100) + "...";
     } else {
         return value;
     }
-}
+};
 
+// latestPosts cut description 
 const latestShort = (value) => {
     if (value.length > 20) {
         return value.slice(0, 20) + "...";
     } else {
         return value;
     }
-}
+};
 
+//delete Post
 const postDelete = async (id) => {
-    await axios.delete(`http://127.0.0.1:8000/api/posts/${id}`).then((response) => {
-        const Toast = Swal.mixin({
-  toast: true,
-  position: 'top',
-  showConfirmButton: false,
-  timer: 3000,
-  timerProgressBar: true,
-  didOpen: (toast) => {
-    toast.addEventListener('mouseenter', Swal.stopTimer)
-    toast.addEventListener('mouseleave', Swal.resumeTimer)
-  }
-})
+    await axios
+        .delete(`http://127.0.0.1:8000/api/posts/${id}`)
+        .then((response) => {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener("mouseenter", Swal.stopTimer);
+                    toast.addEventListener("mouseleave", Swal.resumeTimer);
+                },
+            });
 
-Toast.fire({
-  icon: 'success',
-  title: 'deleted post is  successfully'
-})
-        router.push({ name: 'home', query: { deletedId: id } })
-    })
-}
-
+            Toast.fire({
+                icon: "success",
+                title: "deleted post is  successfully",
+            });
+            router.push({ name: "home", query: { deletedId: id } });
+        });
+};
 
 </script>
 <style scoped>
-@import 'bootstrap/dist/css/bootstrap.css';
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed&family=Sofia+Sans+Condensed&display=swap');
-
-
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed&family=Sofia+Sans+Condensed&display=swap");
 
 .create-user-img {
     width: 35px;
@@ -244,13 +249,12 @@ Toast.fire({
 }
 
 body {
-    font-family: 'Roboto Condensed', sans-serif;
+    font-family: "Roboto Condensed", sans-serif;
 }
 
 .container {
     width: 1100px;
     margin: 0 auto;
-
 }
 
 .see-tools {
@@ -298,7 +302,7 @@ body {
     padding: 0;
     border: none;
     background: transparent;
-    color: #232323;
+    color: #d00d0d;
     text-align: center;
 }
 
@@ -306,7 +310,9 @@ body {
     display: block;
     position: absolute;
     left: 12px;
-    box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
+    box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px,
+        rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px,
+        rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
     padding: 5px 0px 5px 5px;
     padding: 6px 20px;
     border: 1px solid #d5d5d5;
@@ -324,7 +330,6 @@ body {
 .postlist-content {
     margin-top: 100px;
 }
-
 
 .right-menu h1 {
     display: inline;
@@ -350,7 +355,6 @@ body {
 .input-group i {
     margin: 10px;
 }
-
 
 .input-group .search {
     border: none;
@@ -411,7 +415,6 @@ body {
     border-radius: 50%;
 }
 
-
 .people p {
     float: right;
     width: 93%;
@@ -419,7 +422,6 @@ body {
     color: #676767;
     font-size: 18px;
 }
-
 
 .post-title {
     margin-bottom: 0px;
@@ -464,6 +466,7 @@ body {
 
 .postfo-left a {
     display: inline-block;
+    cursor: pointer;
 }
 
 .postfo-left span {
@@ -500,7 +503,6 @@ body {
 
 .category-list {
     margin-bottom: 30px;
-
 }
 
 .category-list h2 {
@@ -508,7 +510,6 @@ body {
     color: #323232;
     font-size: 21px;
 }
-
 
 .latest-post-whole {
     margin-bottom: 20px;
@@ -567,8 +568,6 @@ body {
     margin-right: 0 !important;
 }
 
-
-
 @media screen and (max-width: 768px) {
     .container {
         width: auto;
@@ -591,7 +590,6 @@ body {
         justify-content: space-between;
         align-items: center;
         padding: 0 0px;
-
     }
 
     .login-hright {
@@ -680,7 +678,6 @@ body {
         border-radius: 50%;
     }
 
-
     .people p {
         float: right;
         width: 89%;
@@ -688,8 +685,6 @@ body {
         color: #676767;
         font-size: 18.002px;
     }
-
-
 
     .post-title {
         margin-bottom: 0px;
@@ -726,7 +721,6 @@ body {
 
     .category-list {
         margin-bottom: 29.998px;
-
     }
 
     .category-list h2 {
@@ -768,8 +762,6 @@ body {
         font-weight: bold;
     }
 
-
-
     .postfo-left a span {
         display: inline-block;
         margin-right: 9.999px;
@@ -803,7 +795,6 @@ body {
     }
 }
 
-
 @media screen and (max-width: 640px) {
     .container {
         width: auto;
@@ -830,7 +821,6 @@ body {
         justify-content: space-between;
         align-items: center;
         padding: 0 0px;
-
     }
 
     .login-hright {
@@ -881,7 +871,6 @@ body {
         display: inline;
     }
 
-
     .profile-img {
         display: inline;
         width: 18.003px;
@@ -919,7 +908,6 @@ body {
         justify-content: center;
     }
 
-
     html .profile-img {
         float: left;
         width: 28px;
@@ -943,8 +931,6 @@ body {
         color: #676767;
         font-size: 16px;
     }
-
-
 
     .post-title {
         margin-bottom: 0px;
@@ -981,7 +967,6 @@ body {
 
     .category-list {
         margin-bottom: 28px;
-
     }
 
     .category-list h2 {
@@ -989,7 +974,6 @@ body {
         color: #000;
         font-size: 23.002px;
     }
-
 
     .latest-post-whole {
         margin-bottom: 12px;
@@ -1025,7 +1009,6 @@ body {
         font-weight: bold;
     }
 
-
     .search-result {
         margin: 10.003px 0;
         color: #979797;
@@ -1040,7 +1023,6 @@ body {
         width: 28.125vw;
     }
 
-
     .postfo-left a span {
         display: inline-block;
         margin-right: 8px;
@@ -1052,7 +1034,7 @@ body {
 
     .postfo-right {
         bottom: 26.002px;
-        left: 319.002px;
+        left: 245.002px;
         align-items: center;
         z-index: 0;
     }

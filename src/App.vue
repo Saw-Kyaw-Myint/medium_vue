@@ -13,13 +13,6 @@ onMounted(()=>{
   console.log("hello")
 })
 
-
-
-
-
-
-
-
 </script>
 
 <template>
