@@ -18,17 +18,17 @@
             <label for="">Name</label>
             <input type="text" name="name" v-model="changeProfile.name" /><br />
 
-            <p class="error">{{ errors?.name }}</p>
+            <p class="error-message">{{ errors?.name ? errors.name[0] : '' }}</p>
 
             <label for="">Email</label>
             <input type="text" name="email" v-model="changeProfile.email" /><br />
 
-            <p class="error">{{ errors?.email }}</p>
+            <p class="error-message">{{ errors?.email ? errors.email[0] : '' }}</p>
 
             <label for="">Bio</label>
             <input type="text" name="bio" v-model="changeProfile.bio" /><br />
 
-            <div class="error">{{ errors?.bio }}</div>
+            <div class="error-message">{{ errors?.bio ? errors.bio[0] : '' }}</div>
 
             <div>
                 <button class="cancel" type="reset">Cancel</button>
@@ -47,19 +47,19 @@
                 <label for="">Current Password</label>
                 <input type="password" name="current_password" id="current_password" placeholder="Enter current password..."
                     v-model="updatePassword.current_password" />
-                <span class="error-message">{{ passwordErrors?.current_password }}</span>
+                <span class="error-message">{{ passwordErrors?.current_password ? passwordErrors.current_password[0] : '' }}</span>
             </div>
             <div class="cps-input-group">
                 <label for="">New Password</label>
                 <input type="password" name="new_password" id="new_password" placeholder="Enter new password..."
                     v-model="updatePassword.new_password" />
-                <span class="error-message">{{ passwordErrors?.new_password }}</span>
+                <span class="error-message">{{ passwordErrors?.new_password ? passwordErrors.new_password[0] : ' ' }}</span>
             </div>
             <div class="cps-input-group">
                 <label for="">Confirm Passwor</label>
                 <input type="password" name="confirm_password" id="confirm_password" placeholder="Enter confirm password..."
                     v-model="updatePassword.confirm_password" />
-                <span class="error-message">{{ passwordErrors?.confirm_password }}</span>
+                <span class="error-message">{{ passwordErrors?.confirm_password ? passwordErrors.confirm_password : '' }}</span>
             </div>
             <div class="input-gp change-blk">
                 <input type="submit" value="Change Password" class="change-btn" />
@@ -920,7 +920,7 @@ label {
 
     #edit-profile {
         padding: 1.302vw;
-        left: 19.854vw;
+        left: -10.854vw;
         transition: 0.5s;
         margin-top: 3.906vw;
         box-shadow: rgb(100 100 111 / 20%) 0vw 0.911vw 3.776vw 0vw;
@@ -937,23 +937,15 @@ label {
         font-size: 3.906vw;
     }
 
-    #edit-profile {
-        padding: 1.302vw;
-        left: 34.854vw;
-        transition: 0.5s;
-        margin-top: 3.906vw;
-        box-shadow: rgb(100 100 111 / 20%) 0vw 0.911vw 3.776vw 0vw;
-        border-radius: 2.604vw;
-    }
 
     #password-change {
-        max-width: 65.104vw;
-        transition: 0.5s;
-        left: 30.833vw;
-        margin-top: 7.813vw;
-        padding: 1.302vw;
-        box-shadow: rgb(100 100 111 / 20%) 0vw 0.911vw 3.776vw 0vw;
-        border-radius: 2.604vw;
+    max-width: 40.104vw;
+    transition: 0.5s;
+    left: -9.167vw;
+    margin-top: 7.813vw;
+    padding: 1.302vw;
+    box-shadow: rgb(100 100 111 / 20%) 0vw 0.911vw 3.776vw 0vw;
+    border-radius: 2.604vw;
     }
 
     .x {
@@ -963,15 +955,7 @@ label {
         padding: 0.781vw;
     }
 
-    #password-change {
-        max-width: 40.104vw;
-        transition: 0.5s;
-        left: 33.833vw;
-        margin-top: 7.813vw;
-        padding: 1.302vw;
-        box-shadow: rgb(100 100 111 / 20%) 0vw 0.911vw 3.776vw 0vw;
-        border-radius: 2.604vw;
-    }
+
 
     .x {
         position: absolute;
@@ -1224,6 +1208,15 @@ label {
         border-radius: 3.125vw;
     }
 
+    #edit-profile {
+        padding: 1.302vw;
+        left: -15.854vw;
+        transition: 0.5s;
+        margin-top: 3.906vw;
+        box-shadow: rgb(100 100 111 / 20%) 0vw 0.911vw 3.776vw 0vw;
+        border-radius: 2.604vw;
+    }
+
     .container {
         width: auto;
         margin: 0 auto;
@@ -1258,7 +1251,7 @@ label {
 
     .pf-right-side {
         float: right;
-        width: 42%;
+        width: 43%;
     }
 
     .pf-right-side a {

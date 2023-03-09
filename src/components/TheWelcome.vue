@@ -100,9 +100,10 @@
                         <div class="category-list">
                             <h2 class="cate-name">2022 IN Latest Post</h2>
                             <div v-for="(lpost, index) in latestPosts" :key="index">
-                                <router-link :to="{ name: 'detail', params: { id: lpost?.id } }">
+                               
                                     <div class="latest-post-whole">
                                         <div class="latest-post">
+                                            <router-link :to="{ name: 'profile', params: { id: lpost?.user?.id } }">
                                             <div class="list-latest-profile">
                                                 <a href="#">
                                                     <img :src="url + lpost.user.profile" alt="" width="100%" height="100%"
@@ -110,14 +111,16 @@
                                                     <p class="name">{{ lpost.user.name }}</p>
                                                 </a>
                                             </div>
+                                        </router-link>
                                         </div>
+                                        <router-link :to="{ name: 'detail', params: { id: lpost?.id } }">
                                         <a href="{{ route('post.show', $lpost->id) }}">
                                             <div class="latest-description">
                                                 {{ latestShort(lpost.description) }}
                                             </div>
                                         </a>
+                                    </router-link>
                                     </div>
-                                </router-link>
                             </div>
                         </div>
                         <div class="category-item">

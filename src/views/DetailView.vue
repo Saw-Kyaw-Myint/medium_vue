@@ -134,7 +134,10 @@ watchEffect(async () => {
 			countPost.value = response.data.countPosts;
 			post_id.value = post.value.id
 		});
+		const user=JSON.parse(localStorage.getItem('user'));
+		 user_id.value=user.id;
 	commentList();
+	commentForm.comment = '';
 });
 
 // format date
@@ -147,7 +150,6 @@ const commentList = async () => {
 	await axios.get(`http://127.0.0.1:8000/api/comment/${route.params.id}`).then((response) => {
 		comments.value = response.data;
 	})
-
 }
 
 //delete Post
@@ -167,8 +169,8 @@ const createComment = async () => {
 	user_id.value = currentUser.value.id;
 
 	await axios.post('http://127.0.0.1:8000/api/comment', commentForm).then((response) => {
-		commentForm.comment = '';
 		commentList();
+		router.push({name:'detail',query:{comment:commentForm.comment}});
 	})
 }
 

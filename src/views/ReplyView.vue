@@ -8,7 +8,7 @@
 				</div>
 				<div class="left-detail">
 					<h3>
-						{{ comment.user?.name }}
+						{{ comment.user?.name  }}
 					</h3>
 					<p>
 						{{ comment?.created_at }}
@@ -17,7 +17,7 @@
 			</div>
 
 			<p class="reply-text" @dblclick="comment.edit = 1">
-				{{ comment?.comment }}
+				{{ comment?.comment }} 
 			</p>
 
 			<!-- comment update  -->
@@ -36,7 +36,7 @@
 			</form>
 
 			<div class="comment-btn-group">
-				<button @click="deleteComment(comment.id)" class="delete-comment">delete
+				<button @click="deleteComment(comment.id)" class="delete-comment" v-if="userId==comment.user?.id" >delete
 				</button>
 				<p><button @click="comment.reply = !comment.reply" class="comment-reply">reply</button></p>
 			</div>
@@ -65,9 +65,11 @@
 
 <script setup >
 import { ref, reactive, onMounted } from 'vue'
+import { useRouter } from 'vue-router';
 import axios from 'axios'
 
 const url = ref('http://127.0.0.1:8000/storage/');
+const router = useRouter();
 const updateForm = reactive({
 	comment: '',
 	post_id: '',
@@ -90,7 +92,8 @@ const props = defineProps({
 	comments: Array,
 	postId: Number,
 	userId: Number,
-})
+});
+
 
 const emit = defineEmits('listComment');
 
@@ -134,6 +137,7 @@ const deleteComment = async (id) => {
 	await axios.delete(`http://127.0.0.1:8000/api/comment/${id}`)
 		.then((response) => {
 			emit('listComment')
+			router.push({ name: 'detail', query: { deleteCommentId: id } })
 		})
 }
 
