@@ -135,8 +135,11 @@ watchEffect(async () => {
 			post_id.value = post.value.id
 		});
 		const user=JSON.parse(localStorage.getItem('user'));
-		 user_id.value=user.id;
-	commentList();
+		if(user){
+			user_id.value=user.id;
+		}
+		
+	    commentList();
 	commentForm.comment = '';
 });
 

@@ -29,7 +29,7 @@
                             <label for="password">Confirm Password</label>
                             <input type="password" id="confirmpassword" v-model="form.confirm_password"
                                 name="confirm_password" placeholder="Confirm Password">
-                            <p class="error-message">{{ errors?.confirm_password ? errors.password[0] : '' }}</p>
+                            <p class="error-message">{{ errors?.confirm_password ? errors.confirm_password[0] : '' }}</p>
                         </div>
                     </div>
                 </div>
